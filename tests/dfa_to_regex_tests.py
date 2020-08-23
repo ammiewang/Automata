@@ -3,7 +3,7 @@ import random
 
 
 def test1():
-    #even number of 0s
+    #accepts strings w/ even number of 0s
     s0 = state(0)
     s1 = state(1)
     s0.outpaths = {'0': s1, '1': s0}
@@ -17,7 +17,7 @@ def test1():
 #test1()
 
 def test2():
-    #odd number of 0s
+    #accepts strings w/ odd number of 0s
     s0 = state(0)
     s1 = state(1)
     s0.outpaths = {'0': s1, '1': s0}
@@ -32,6 +32,7 @@ def test2():
 
 def test3():
     #pg 17 Example 3.2 from Automata & Computability
+    #accepts strings w/ 3 consecutive a's
     s0 = state(0)
     s1 = state(1)
     s2 = state(2)
@@ -49,6 +50,7 @@ def test3():
 #test3()
 
 def test4():
+    #accepts any variant of a(ba)*a
     s0 = state(0)
     s1 = state(1)
     s2 = state(2)
@@ -61,3 +63,27 @@ def test4():
     print(d.all_regex(False))
 
 #test4()
+
+def test5():
+    #Example 13.2 from Automata & Computability
+    #accepts {a,b} and any strings with 3+ characters
+    print('Test 5')
+    s0 = state(0)
+    s1 = state(1)
+    s2 = state(2)
+    s3 = state(3)
+    s4 = state(4)
+    s5 = state(5)
+    s0.outpaths = {'a': s1, 'b': s2}
+    s1.outpaths = {'a': s3, 'b': s4}
+    s2.outpaths = {'a': s4, 'b': s3}
+    s3.outpaths = {'a': s5, 'b': s5}
+    s4.outpaths = {'a': s5, 'b': s5}
+    s5.outpaths = {'a': s5, 'b': s5}
+    d = DFA([s0,s1,s2,s3,s4,s5])
+    d.start_state = s0
+    d.accept_states = [s1, s2, s5]
+    d.alphabet = ['a', 'b']
+    print(d.all_regex())
+
+#test5()

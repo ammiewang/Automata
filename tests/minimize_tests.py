@@ -38,7 +38,7 @@ def test1():
 #test1()
 
 def test2():
-    #Example 13.1 from http://www.cs.cornell.edu/courses/cs2800/2013fa/Handouts/minimization.pdf
+    #Example 13.1 from Automata & Computability
     print('Test 2')
     s0 = state(0)
     s1 = state(1)
@@ -107,3 +107,40 @@ def test3():
     new state to old states: [(6, [3, 0]), (7, [1, 4, 2]), (5, [5])]
     """
 #test3()
+
+def test4():
+    #Example 13.2 from Automata & Computability
+    print('Test 4')
+    s0 = state(0)
+    s1 = state(1)
+    s2 = state(2)
+    s3 = state(3)
+    s4 = state(4)
+    s5 = state(5)
+    s0.outpaths = {'a': s1, 'b': s2}
+    s1.outpaths = {'a': s3, 'b': s4}
+    s2.outpaths = {'a': s4, 'b': s3}
+    s3.outpaths = {'a': s5, 'b': s5}
+    s4.outpaths = {'a': s5, 'b': s5}
+    s5.outpaths = {'a': s5, 'b': s5}
+    d = DFA([s0,s1,s2,s3,s4,s5])
+    d.start_state = s0
+    d.accept_states = [s1, s2, s5]
+    d.alphabet = ['a', 'b']
+    d.minimize()
+    print('states: ', [s.id for s in d.states])
+    print('outpaths: ', [('state: ' + str(s.id), [(key, val.id) for key,val in s.outpaths.items()]) for s in d.states])
+    print('start state: ', d.start_state.id)
+    print('accept states: ', [s.id for s in d.accept_states])
+    print('new state to old states:', [(key.id, [v.id for v in val]) for key, val in d.new_states.items()])
+
+    """
+    Correct Output
+
+    states:  [0, 5, 7, 6]
+    outpaths:  [('state: 0', [('a', 6), ('b', 6)]), ('state: 5', [('a', 5), ('b', 5)]), ('state: 7', [('a', 5), ('b', 5)]), ('state: 6', [('a', 7), ('b', 7)])]
+    start state:  0
+    accept states:  [6, 5]
+    new state to old states: [(6, [1, 2]), (7, [3, 4]), (0, [0]), (5, [5])]
+    """
+#test4()
