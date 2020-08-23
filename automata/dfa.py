@@ -14,60 +14,37 @@ class DFA():
 
     def possible_paths(self, left_out, origin, dest, final=False):
         if not final:
-            for state in self.states:
-                state.parent = (None, None)
-                state.children = []
             t = path(origin)
 
-        start_pts = [(None, origin)]
+        start_pts = [(None, origin, [(None, origin)])]
         paths = []
         loops = set()
 
         while len(start_pts) > 0:
             new_starts = []
-            for char1, pt in start_pts:
+            for char1, pt, anc in start_pts:
+                ancestors = [y for x,y in anc]
                 for char2, pt2 in pt.outpaths.items():
-                    curr = pt
                     visited = False
-                    ancestors = {pt}
+                    if pt2 in ancestors:
+                        visited = True
+                        curr = pt2
 
-                    while curr is not None:
-                        if pt2.id == curr.id:
-                            visited = True
-                            break
-                        ancestors.add(curr)
-                        curr = curr.parent[1]
-
-                    if not visited and pt2 not in left_out and pt2.id != dest.id:
-                        pt.children.append((char2,pt2),)
-                        pt2.parent = (char1, pt)
-                        new_starts.append((char2, pt2),)
+                    if not visited and pt2 not in left_out and pt2.id != dest.id: #and \
+                    #(char2, pt2, anc + [(char2, pt2)]) not in new_starts:
+                        new_starts.append((char2, pt2, anc + [(char2, pt2)]),)
 
                     elif pt2.id == dest.id and not final:
                         if pt.id == t.root.id and pt2.id == pt.id and pt not in left_out:
                             paths.append([(char2, pt2)])
                             loops.add((pt, pt2),)
                         else:
-                            real_path = [(char2, pt2)]
-                            curr_state = pt
-                            curr_char = char1
-                            while curr_char is not None or curr_state is not None:
-                                real_path = [(curr_char, curr_state)] + real_path
-                                curr_char = curr_state.parent[0]
-                                curr_state = curr_state.parent[1]
-                            #print([(char, p.id) for char, p in real_path])
-                            paths.append(real_path)
+                            paths.append(anc + [(char2, pt2)])
 
                     elif pt2.id == dest.id and final:
                         loops.add((dest, pt))
                         if pt.id != dest.id:
-                            real_path = [(char2, pt2)]
-                            curr_state = pt
-                            curr_char = char1
-                            while curr_char is not None and curr_state is not None:
-                                real_path = [(curr_char, curr_state)] + real_path
-                                curr_char = curr_state.parent[0]
-                                curr_state = curr_state.parent[1]
+                            real_path = anc[1:]
                         else:
                             real_path = []
                         paths.append(real_path)
@@ -80,11 +57,16 @@ class DFA():
         return paths, loops
 
     def make_regex_parts(self, paths, loops):
+        new_paths = []
+        for pth in paths:
+            if pth not in new_paths:
+                new_paths.append(pth)
+
         regexes = []
         for st in self.states:
             st.reverse_outpaths()
 
-        for path in paths:
+        for path in new_paths:
             regex = ''
             for i in range(len(path)):
                 possible_endpts = []
@@ -228,6 +210,7 @@ class DFA():
                         reachable.add(s2)
                         new_state_set.add(s2)
             state_set = new_state_set
+        #print([s.id for s in set(self.states).difference(reachable)])
         self.states = list(reachable)
         self.accept_states = [a for a in self.accept_states if a in self.states]
 
@@ -261,22 +244,13 @@ class DFA():
                             s1 = self.states[i].outpaths[sym] if sym in self.states[i].outpaths else None
                             s2 = self.states[j].outpaths[sym] if sym in self.states[j].outpaths else None
                             if s1 is not None and s2 is not None:
-                                maxid1 = max(s1.index, self.states[i].index)
-                                maxid2 = max(s2.index, self.states[j].index)
-                                minid1 = min(s1.index, self.states[i].index)
-                                minid2 = min(s2.index, self.states[j].index)
-                                x1 = self.matrix[minid1][maxid1]
-                                x2 = self.matrix[minid2][maxid2]
-                                if x1 is None or x1 == round_num:
-                                    if x2 is not None and x2 < round_num:
-                                        self.matrix[i][j] = round_num
-                                        cont = True
-                                        break
-                                elif x2 is None or x2 == round_num:
-                                    if x1 is not None and x1 < round_num:
-                                        self.matrix[i][j] = round_num
-                                        cont = True
-                                        break
+                                max_index = max(s1.index, s2.index)
+                                min_index = min(s1.index, s2.index)
+                                if self.matrix[min_index][max_index] is not None and \
+                                self.matrix[min_index][max_index] != round_num:
+                                    self.matrix[i][j] = round_num
+                                    cont = True
+                                    break
                             elif (s1 is None and s2 is not None) or (s1 is not None and s2 is None):
                                 self.matrix[i][j] = round_num
                                 cont = True
