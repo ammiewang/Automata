@@ -68,33 +68,29 @@ class NFA():
 
 
     def nfa_to_dfa(self):
-        #self.my_dfa = DFA([])
-        if len(self.start_states) > 1:
-            self.new_ss = state('start')
-            self.new_ss.outpaths = {'ε': self.start_states}
-            self.new_ss.made_of = set([self.new_ss])
-            self.states.append(self.new_ss)
-        else:
-            self.new_ss = state({self.start_states[0].id})#state({self.start_states[0]})
-            self.new_ss.outpaths = self.start_states[0].outpaths
-            self.new_ss.made_of = set([self.start_states[0]])
-            self.states.append(self.new_ss)
-            #print(self.new_ss.made_of)
-            #self.new_ss.id = {self.start_states[0].id}
+
+        self.new_ss = state({s.id for s in self.start_states})
+        temp_op = {key: set() for key in self.alphabet + ['ε']}
+        for ss in self.start_states:
+            for k,v in ss.outpaths.items():
+                set_v = set(v)
+                temp_op[k] = temp_op[k].union(set_v)
+        self.new_ss.outpaths = {k:list(v) for k,v in temp_op.items()}
+        self.new_ss.made_of = set(self.start_states)
+        self.states.append(self.new_ss)
 
         self.e_transitions()
         if 'ε' in self.new_ss.outpaths:
             del self.new_ss.outpaths['ε']
 
-        existing_states = [{self.new_ss}]#{frozenset([self.new_ss])}
-        new_states = [self.new_ss]#[{self.new_ss}]
+        existing_states = [self.new_ss.made_of]
+        new_states = [self.new_ss]
         dfa_states = [self.new_ss]
 
         while len(new_states) > 0:
             next_round = []
             for es in new_states:
                 new_dict = {key: set() for key in self.alphabet}
-                one_state = False
                 for sub_state in es.made_of:
                     for char, states in sub_state.ep_outpaths.items():
                         new_dict[char] = new_dict[char].union(states)
