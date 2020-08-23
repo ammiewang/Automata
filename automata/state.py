@@ -2,8 +2,7 @@ class state():
     def __init__(self, id):
         self.id = id
         self.outpaths = {}
-        self.parent = (None, None)
-        self.children = []
+
     def reverse_outpaths(self):
         self.rev_op = {}
         temp = [(v,k) for k,v in self.outpaths.items()]

@@ -251,18 +251,3 @@ class Regex:
         self.my_dfa = self.my_nfa.my_dfa
         self.my_dfa.alphabet = list(self.alphabet)
         self.my_dfa.minimize()
-
-
-#rgx = Regex('(000* + 111*)*')
-#rgx = Regex('(0 + 1(01*0)*1)*')
-#rgx = Regex('a*b + (a*b)(a + ba*b)*(a + ba*b)')
-#rgx = Regex('b* + (b*a)(b + ab*a)*(ab*)')
-#rgx.nfa_maker()
-#for state in rgx.my_nfa.states:
-    #print('id: ', state.id, 'outpaths: ', [(k, [x.id for x in v]) for k,v in state.outpaths.items()])
-
-#rgx.dfa_maker()
-#for state in rgx.my_dfa.states:
-    #print('id: ', state.id, 'outpaths: ', [(k, v.id) for k,v in state.outpaths.items()])
-#print('accept states:', [s.id for s in rgx.my_dfa.accept_states])
-#print('start state: ', rgx.my_dfa.start_state.id)

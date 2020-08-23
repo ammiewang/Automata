@@ -13,8 +13,6 @@ class DFA():
         self.alphabet = []
 
     def possible_paths(self, left_out, origin, dest, final=False):
-        if not final:
-            t = path(origin)
 
         start_pts = [(None, origin, [(None, origin)])]
         paths = []
@@ -35,7 +33,7 @@ class DFA():
                         new_starts.append((char2, pt2, anc + [(char2, pt2)]),)
 
                     elif pt2.id == dest.id and not final:
-                        if pt.id == t.root.id and pt2.id == pt.id and pt not in left_out:
+                        if pt.id == origin.id and pt2.id == pt.id and pt not in left_out:
                             paths.append([(char2, pt2)])
                             loops.add((pt, pt2),)
                         else:
@@ -52,16 +50,16 @@ class DFA():
         return paths, loops
 
     def make_regex_parts(self, paths, loops):
-        new_paths = []
-        for pth in paths:
-            if pth not in new_paths:
-                new_paths.append(pth)
+        #new_paths = []
+        #for pth in paths:
+            #if pth not in new_paths:
+                #new_paths.append(pth)
 
         regexes = []
         for st in self.states:
             st.reverse_outpaths()
 
-        for path in new_paths:
+        for path in paths:
             regex = ''
             for i in range(len(path)):
                 possible_endpts = []
