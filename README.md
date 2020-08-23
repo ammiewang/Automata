@@ -1,24 +1,28 @@
-# dfas
-converts DFAs to regular expressions
+# Automata
+  performs various conversions on DFAs, NFAs, and regular expressions
 
-Requirements:
+### Requirements
 - Python 3
 - pgi/PyGObject
 
-Description:
-  This program converts deterministic finite automata into regular expressions by recursively utilizing the formula in Dexter Kozen's Automata and Computability (pg. 53). Various (correct) regular expressions can be derived for the same language, so the user must select whether they want to receive a random or particular one. If the user chooses to randomly receive any regular expression for their DFA, the program will make a random choice for which states are removed when simplifying the automaton. Otherwise, the user must specify which state they would like to remove at each recursive step of the algorithm.
+### Operations
 
-Instructions:
-  - run main.py
-  - input the number of states, the start state, the accept states, and the alphabet for your DFA
-    - example:
-      - Input the number of states: 4
-      - Input the start state: 0
-      - Input the accept states: 1 2
-      - Inut the alphabet: a b c
-  - input the correct paths in the popup window and press the 'Enter' button (on the window)
-    - example:
-      - if 0 -- (a) --> 1, write 1 under row '0' column 'a'
-  - return to the terminal and choose whether the regular expression will be randomized (y) or not (n)
-    - if not (n), choose which states to remove at each step
-  - a regular expression for the given DFA will output to the terminal
+#### DFAs
+- DFA to regex conversion
+  - Recursively utilizes formula 9.19 from Lecture 9 of Dexter Kozen's *Automata and Computability*
+  - Since various (correct) regular expressions can be derived for the same language, the user must select whether they want to receive a random or particular one. If the user chooses to randomly receive any regular expression for their DFA, the program will make a random choice for which states are removed when simplifying the automaton. Otherwise, the user must specify which state they would like to remove at each recursive step of the algorithm.
+
+- DFA minimization
+  - Uses DFA minimization algorithm in Lecture 14 of *Automata and Computability*, also described [here](https://www.geeksforgeeks.org/minimization-of-dfa/)
+
+#### NFAs
+- NFA to DFA conversion
+  - Uses the subset construction technique, described [here](https://en.wikipedia.org/wiki/Powerset_construction)
+
+#### Regexes
+- Regex to DFA conversion
+  - Parses the regex, converts the regex to an NFA, converts the NFA to a DFA, and minimizes the DFA
+
+### Running the Program
+- To input your own DFA/NFA/regex, run main.py
+- To run one of the test functions, navigate to the Automata directory, uncomment the call to the specific test function in your chosen test file, and run the command 'python -m tests/test_file_name.py'
