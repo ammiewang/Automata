@@ -43,11 +43,6 @@ class DFA():
 
                     elif pt2.id == dest.id and final:
                         loops.add((dest, pt))
-                        if pt.id != dest.id:
-                            real_path = anc[1:]
-                        else:
-                            real_path = []
-                        paths.append(real_path)
 
                     elif visited and pt not in left_out and curr not in left_out \
                     and (curr,pt) not in loops:
@@ -94,24 +89,11 @@ class DFA():
         #print([l.id for l in left_out], s1.id, s2.id)
         no_nonself_loops = True
         paths, loops = self.possible_paths(left_out, s1, s2)
-        #print('paths: ', [[(c,p.id) for c,p in path] for path in paths])
-        #print('loops: ', [(s.id, f.id) for s, f in loops])
-        if s2 not in left_out:
-            final_pths, final_loops = self.possible_paths(left_out + [s2], s2, s2, True)
-            #print('paths f: ', [[(c,p.id) for c,p in path] for path in final_pths])
-            #print('loops f: ', [(s.id, f.id) for s, f in final_loops])
-            new_paths = []
-            if len(final_pths) > 0:
-                for pth in paths:
-                    for pth2 in final_pths:
-                        new_paths.append(pth + pth2)
-            else:
-                new_paths = paths
-            loops = loops.union(final_loops)
 
-        else:
-            new_paths = paths
-        #print('paths: ', [[(c,p.id) for c,p in path] for path in new_paths])
+        if s2 not in left_out:
+            _, final_loops = self.possible_paths(left_out + [s2], s2, s2, True)
+            loops = loops.union(final_loops)
+        #print('paths: ', [[(c,p.id) for c,p in path] for path in paths])
         #print('loops: ', [(s.id, f.id) for s, f in loops])
         for s,f in loops:
             if s.id != f.id:
@@ -119,7 +101,7 @@ class DFA():
                 break
         if no_nonself_loops:
             if len(paths) != 0:
-                return self.make_regex_parts(new_paths, loops)
+                return self.make_regex_parts(paths, loops)
             else:
                 if s1.id == s2.id: #and s1 in left_out:
                     return 'ε'
