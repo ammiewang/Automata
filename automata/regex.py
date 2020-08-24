@@ -252,7 +252,7 @@ class Regex:
         self.my_dfa.alphabet = list(self.alphabet)
         self.my_dfa.minimize()
 
-    def complement_maker(self, rand=False):
+    def complement_maker(self, rand=True):
         self.dfa_maker()
         self.my_dfa.take_dfa_complement()
         self.complement = self.my_dfa.complement.all_regex(rand)
