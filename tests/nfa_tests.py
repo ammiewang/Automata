@@ -11,20 +11,19 @@ def test1():
     n.accept_states = [s1]
     n.alphabet = ['a','b']
     n.nfa_to_dfa()
-    for st in n.my_dfa.states:
-        print('state id:', st.id, ', outpaths: ', [(k, v.id) for k,v in st.outpaths.items()])
-    print('accept states:', [s.id for s in n.my_dfa.accept_states])
-    print('start state: ', n.my_dfa.start_state.id)
+    n.my_dfa.print_dfa()
 
     """
     Correct Output
 
-    state id: {0} , outpaths:  [('a', '∅'), ('b', {0, 1})]
-    state id: ∅ , outpaths:  [('a', '∅'), ('b', '∅')]
-    state id: {0, 1} , outpaths:  [('a', {1}), ('b', {0, 1})]
-    state id: {1} , outpaths:  [('a', {1}), ('b', {0})]
-    accept states: [{0, 1}, {1}]
-    start state:  {0}
+    States:  [{0}, '∅', {0, 1}, {1}]
+    Start State:  {0}
+    Accept States:  [{0, 1}, {1}]
+    Outpaths:
+    State: {0} , Outpaths:  [('a', '∅'), ('b', {0, 1})]
+    State: ∅ , Outpaths:  [('a', '∅'), ('b', '∅')]
+    State: {0, 1} , Outpaths:  [('a', {1}), ('b', {0, 1})]
+    State: {1} , Outpaths:  [('a', {1}), ('b', {0})]
     """
 
 test1()

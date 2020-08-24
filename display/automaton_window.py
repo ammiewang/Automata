@@ -15,36 +15,53 @@ class AutomatonWindow(Gtk.Window):
         self.grid = Gtk.Grid()
         self.add(self.grid)
 
+        label_box = Gtk.Box(spacing=6)
+        self.grid.attach(label_box, 0, 0, 1, 1)
+        label = Gtk.Label()
+        label.set_markup(
+            "<b>Instructions</b> \n"
+            "States in the resulting DFA/NFA are numbered "
+            "from 0 to the number of states -1. "
+            "Label the start and accept states as well as "
+            "the transitions in the following window "
+            "accordingly. Separate start/accept states "
+            "and alphabet characters by space. \n"
+        )
+        label.set_line_wrap(True)
+        label.set_max_width_chars(48)
+        label.set_justify(Gtk.Justification.LEFT)
+        label_box.pack_start(label, True, True, 0)
+
         self.num_state_box = Gtk.Box(spacing=6)
         self.num_state_button = Gtk.Button(label='Number of states: ')
         self.num_states = Gtk.Entry()
         self.num_state_box.pack_start(self.num_state_button, True, True, 0)
         self.num_state_box.pack_start(self.num_states, False, False, 0)
-        self.grid.attach(self.num_state_box, 0, 0, 1, 1)
+        self.grid.attach(self.num_state_box, 0, 1, 1, 1)
 
         self.ss_box = Gtk.Box(spacing=6)
-        self.grid.attach(self.ss_box, 0, 1, 1, 1)
-        self.ss_button = Gtk.Button(label="Start state(s):")
+        self.grid.attach(self.ss_box, 0, 2, 1, 1)
+        self.ss_button = Gtk.Button(label="Start state(s): ")
         self.ss_box.pack_start(self.ss_button, True, True, 0)
         self.ss = Gtk.Entry()
         self.ss_box.pack_start(self.ss, False, False, 0)
 
         self.acc_box = Gtk.Box(spacing=6)
-        self.grid.attach(self.acc_box, 0, 2, 1, 2)
-        self.acc_button = Gtk.Button(label="Accept states: \n (separate by space)")
+        self.grid.attach(self.acc_box, 0, 3, 1, 1)
+        self.acc_button = Gtk.Button(label="Accept states: ")
         self.acc_box.pack_start(self.acc_button, True, True, 0)
         self.accs = Gtk.Entry()
         self.acc_box.pack_start(self.accs, False, False, 0)
 
         self.alph_box = Gtk.Box(spacing=6)
-        self.grid.attach(self.alph_box, 0, 4, 1, 2)
-        self.alph_button = Gtk.Button(label="Alphabet: \n (separate by space)")
+        self.grid.attach(self.alph_box, 0, 4, 1, 1)
+        self.alph_button = Gtk.Button(label="Alphabet: ")
         self.alph_box.pack_start(self.alph_button, True, True, 0)
         self.alph = Gtk.Entry()
         self.alph_box.pack_start(self.alph, False, False, 0)
 
         enter = Gtk.Button(label='Enter')
-        self.grid.attach(enter, 0, 6, 1, 1)
+        self.grid.attach(enter, 0, 5, 1, 1)
         enter.connect("clicked", self.enter_menu, d)
 
     def enter_menu(self, button, d):

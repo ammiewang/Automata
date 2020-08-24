@@ -8,16 +8,16 @@ def test1():
     """
     Correct Output
 
-    States:  [9, 8, {4}, {1}, '∅', {6}]
-    Start State:  {6}
-    Accept States:  [8, 9, {6}]
+    States:  [11, '∅', 10, 9, 12, 8]
+    Start State:  12
+    Accept States:  [8, 9, 12]
     Outpaths:
-    State: 9 , Outpaths:  [('0', {1}), ('1', 9)]
-    State: 8 , Outpaths:  [('0', 8), ('1', {4})]
-    State: {4} , Outpaths:  [('0', '∅'), ('1', 9)]
-    State: {1} , Outpaths:  [('0', 8), ('1', '∅')]
+    State: 11 , Outpaths:  [('0', 8), ('1', '∅')]
     State: ∅ , Outpaths:  [('0', '∅'), ('1', '∅')]
-    State: {6} , Outpaths:  [('0', {1}), ('1', {4})]
+    State: 10 , Outpaths:  [('0', '∅'), ('1', 9)]
+    State: 9 , Outpaths:  [('0', 11), ('1', 9)]
+    State: 12 , Outpaths:  [('0', 11), ('1', 10)]
+    State: 8 , Outpaths:  [('0', 8), ('1', 10)]
     """
 #test1()
 
@@ -29,21 +29,21 @@ def test2():
     """
     Correct Output
 
-    States:  [{7}, 15, 16, '∅', {13}, {18}, {10}, {16}, {1}, {4}, 14]
-    Start State:  {18}
+    States:  [22, 14, 23, 15, 16, 17, 18, '∅', 19, 20, 21]
+    Start State:  20
     Accept States:  [16]
     Outpaths:
-    State: {7} , Outpaths:  [('0', '∅'), ('1', 15)]
-    State: 15 , Outpaths:  [('0', {13}), ('1', {16})]
-    State: 16 , Outpaths:  [('0', '∅'), ('1', '∅')]
-    State: ∅ , Outpaths:  [('0', '∅'), ('1', '∅')]
-    State: {13} , Outpaths:  [('0', '∅'), ('1', 16)]
-    State: {18} , Outpaths:  [('0', {1}), ('1', {4})]
-    State: {10} , Outpaths:  [('0', 15), ('1', '∅')]
-    State: {16} , Outpaths:  [('0', 16), ('1', '∅')]
-    State: {1} , Outpaths:  [('0', '∅'), ('1', 14)]
-    State: {4} , Outpaths:  [('0', 14), ('1', '∅')]
-    State: 14 , Outpaths:  [('0', {7}), ('1', {10})]
+    State: 22 , Outpaths:  [('1', '∅'), ('0', 16)]
+    State: 14 , Outpaths:  [('1', 21), ('0', 18)]
+    State: 23 , Outpaths:  [('1', 14), ('0', '∅')]
+    State: 15 , Outpaths:  [('1', 22), ('0', 19)]
+    State: 16 , Outpaths:  [('1', '∅'), ('0', '∅')]
+    State: 17 , Outpaths:  [('1', '∅'), ('0', 14)]
+    State: 18 , Outpaths:  [('1', 15), ('0', '∅')]
+    State: ∅ , Outpaths:  [('1', '∅'), ('0', '∅')]
+    State: 19 , Outpaths:  [('1', 16), ('0', '∅')]
+    State: 20 , Outpaths:  [('1', 17), ('0', 23)]
+    State: 21 , Outpaths:  [('1', '∅'), ('0', 15)]
     """
 
 #test2()
@@ -55,13 +55,13 @@ def test3():
 
     """
     Correct Output
-    
-    States:  [{5}, 7, 6]
+
+    States:  [7, 6, 8]
     Start State:  6
     Accept States:  [6]
     Outpaths:
-    State: {5} , Outpaths:  [('1', {5}), ('0', 7)]
-    State: 7 , Outpaths:  [('1', 6), ('0', {5})]
-    State: 6 , Outpaths:  [('1', 7), ('0', 6)]
+    State: 7 , Outpaths:  [('0', 8), ('1', 6)]
+    State: 6 , Outpaths:  [('0', 6), ('1', 7)]
+    State: 8 , Outpaths:  [('0', 7), ('1', 8)]
     """
 #test3()

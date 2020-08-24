@@ -280,7 +280,11 @@ class DFA():
         missing_states = set(self.states).difference(existing_states)
 
         for st in missing_states:
-            self.new_states[st] = {st}
+            if st.id != '∅':
+                self.new_states[state(count)] = {st}
+                count += 1
+            else:
+                self.new_states[st] = {st}
 
         self.new_start_state = None
         self.new_acc_states = []
