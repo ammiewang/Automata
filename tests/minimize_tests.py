@@ -19,20 +19,21 @@ def test1():
     d.accept_states = [s4]
     d.alphabet = ['a', 'b']
     d.minimize()
-    print('states: ', [s.id for s in d.states])
-    print('outpaths: ', [('state: ' + str(s.id), [(key, val.id) for key,val in s.outpaths.items()]) for s in d.states])
-    print('start state: ', d.start_state.id)
-    print('accept states: ', [s.id for s in d.accept_states])
-    print('new state to old states:', [(key.id, [v.id for v in val]) for key, val in d.new_states.items()])
+    d.print_dfa(True)
 
     """
     Correct Output
 
-    states:  [3, 4, 1, 5]
-    outpaths:  [('state: 3', [('a', 1), ('b', 4)]), ('state: 4', [('a', 1), ('b', 5)]), ('state: 1', [('a', 1), ('b', 3)]), ('state: 5', [('a', 1), ('b', 5)])]
-    start state:  1
-    accept states:  [4]
-    new state to old states: [(5, [0, 2]), (4, [4]), (3, [3]), (1, [1])]
+    States:  [5, 3, 1, 4]
+    Start State:  1
+    Accept States:  [4]
+    Outpaths:
+    State: 5 , Outpaths:  [('a', 1), ('b', 5)]
+    State: 3 , Outpaths:  [('a', 1), ('b', 4)]
+    State: 1 , Outpaths:  [('a', 1), ('b', 3)]
+    State: 4 , Outpaths:  [('a', 1), ('b', 5)]
+    State Collapses:
+    [(5, [2, 0]), (4, [4]), (1, [1]), (3, [3])]
     """
 
 #test1()
@@ -53,20 +54,20 @@ def test2():
     d.accept_states = [s1, s3]
     d.alphabet = ['a', 'b']
     d.minimize()
-    print('states: ', [s.id for s in d.states])
-    print('outpaths: ', [('state: ' + str(s.id), [(key, val.id) for key,val in s.outpaths.items()]) for s in d.states])
-    print('start state: ', d.start_state.id)
-    print('accept states: ', [s.id for s in d.accept_states])
-    print('new state to old states:', [(key.id, [v.id for v in val]) for key, val in d.new_states.items()])
+    d.print_dfa(True)
 
     """
     Correct Output
 
-    states:  [2, 4, 0]
-    outpaths:  [('state: 2', [('a', 2), ('b', 2)]), ('state: 4', [('a', 2), ('b', 2)]), ('state: 0', [('a', 4), ('b', 4)])]
-    start state:  0
-    accept states:  [4]
-    new state to old states: [(4, [1, 3]), (2, [2]), (0, [0])]
+    States:  [4, 2, 0]
+    Start State:  0
+    Accept States:  [4]
+    Outpaths:
+    State: 4 , Outpaths:  [('a', 2), ('b', 2)]
+    State: 2 , Outpaths:  [('a', 2), ('b', 2)]
+    State: 0 , Outpaths:  [('a', 4), ('b', 4)]
+    State Collapses:
+    [(4, [1, 3]), (2, [2]), (0, [0])]
     """
 
 #test2()
@@ -91,20 +92,20 @@ def test3():
     d.accept_states = [s1, s2, s4]
     d.alphabet = ['0', '1']
     d.minimize()
-    print('states: ', [s.id for s in d.states])
-    print('outpaths: ', [('state: ' + str(s.id), [(key, val.id) for key,val in s.outpaths.items()]) for s in d.states])
-    print('start state: ', d.start_state.id)
-    print('accept states: ', [s.id for s in d.accept_states])
-    print('new state to old states:', [(key.id, [v.id for v in val]) for key, val in d.new_states.items()])
+    d.print_dfa(True)
 
     """
     Correct Output
 
-    states:  [6, 5, 7]
-    outpaths:  [('state: 6', [('0', 6), ('1', 7)]), ('state: 5', [('0', 5), ('1', 5)]), ('state: 7', [('0', 7), ('1', 5)])]
-    start state:  6
-    accept states:  [7]
-    new state to old states: [(6, [3, 0]), (7, [1, 4, 2]), (5, [5])]
+    States:  [5, 7, 6]
+    Start State:  6
+    Accept States:  [7]
+    Outpaths:
+    State: 5 , Outpaths:  [('0', 5), ('1', 5)]
+    State: 7 , Outpaths:  [('0', 7), ('1', 5)]
+    State: 6 , Outpaths:  [('0', 6), ('1', 7)]
+    State Collapses:
+    [(6, [0, 3]), (7, [4, 2, 1]), (5, [5])]
     """
 #test3()
 
@@ -128,19 +129,20 @@ def test4():
     d.accept_states = [s1, s2, s5]
     d.alphabet = ['a', 'b']
     d.minimize()
-    print('states: ', [s.id for s in d.states])
-    print('outpaths: ', [('state: ' + str(s.id), [(key, val.id) for key,val in s.outpaths.items()]) for s in d.states])
-    print('start state: ', d.start_state.id)
-    print('accept states: ', [s.id for s in d.accept_states])
-    print('new state to old states:', [(key.id, [v.id for v in val]) for key, val in d.new_states.items()])
+    d.print_dfa(True)
 
     """
     Correct Output
 
-    states:  [0, 5, 7, 6]
-    outpaths:  [('state: 0', [('a', 6), ('b', 6)]), ('state: 5', [('a', 5), ('b', 5)]), ('state: 7', [('a', 5), ('b', 5)]), ('state: 6', [('a', 7), ('b', 7)])]
-    start state:  0
-    accept states:  [6, 5]
-    new state to old states: [(6, [1, 2]), (7, [3, 4]), (0, [0]), (5, [5])]
+    States:  [7, 6, 5, 0]
+    Start State:  0
+    Accept States:  [6, 5]
+    Outpaths:
+    State: 7 , Outpaths:  [('a', 5), ('b', 5)]
+    State: 6 , Outpaths:  [('a', 7), ('b', 7)]
+    State: 5 , Outpaths:  [('a', 5), ('b', 5)]
+    State: 0 , Outpaths:  [('a', 6), ('b', 6)]
+    State Collapses:
+    [(6, [2, 1]), (7, [4, 3]), (5, [5]), (0, [0])]
     """
 #test4()

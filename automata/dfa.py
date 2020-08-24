@@ -306,3 +306,14 @@ class DFA():
         self.complement.start_state = self.start_state
         self.complement.accept_states = list(new_acc)
         self.complement.alphabet = self.alphabet
+
+    def print_dfa(self, minimize=False):
+        print('States: ', [s.id for s in self.states])
+        print('Start State: ', self.start_state.id)
+        print('Accept States: ', [s.id for s in self.accept_states])
+        print('Outpaths: ')
+        for s in self.states:
+            print('State:', s.id, ', Outpaths: ', [(key, val.id) for key,val in s.outpaths.items()])
+        if minimize:
+            print('State Collapses:')
+            print([(key.id, [v.id for v in val]) for key, val in self.new_states.items() if key in self.states])
