@@ -10,7 +10,7 @@
 #### DFAs
 - DFA to regex conversion
   - Recursively utilizes formula 9.19 from Lecture 9 of Dexter Kozen's *Automata and Computability*
-    - ![formula](https://github.com/ammiewang/Automata/blob/master/images/formula.png)
+    ![formula](https://github.com/ammiewang/Automata/blob/master/images/formula.png)
   - Since various (correct) regular expressions can be derived for the same language, the user must select whether they want to receive a random or particular one. If the user chooses to randomly receive any regular expression for their DFA, the program will make a random choice for which states are removed when simplifying the automaton. Otherwise, the user must specify which state they would like to remove at each recursive step of the algorithm.
 
 - DFA minimization
@@ -33,10 +33,10 @@
 
 ### Input Examples
 #### DFA
-- ![DFA](https://github.com/ammiewang/Automata/blob/master/images/dfa_inp.gif)
+ ![DFA](https://github.com/ammiewang/Automata/blob/master/images/dfa_inp.gif)
 
 #### NFA
-- ![NFA](https://github.com/ammiewang/Automata/blob/master/images/nfa_inp.gif)
+ ![NFA](https://github.com/ammiewang/Automata/blob/master/images/nfa_inp.gif)
 
 #### Regex
-- ![Regex](https://github.com/ammiewang/Automata/blob/master/images/regex_inp.gif)
+ ![Regex](https://github.com/ammiewang/Automata/blob/master/images/regex_inp.gif)
