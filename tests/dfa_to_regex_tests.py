@@ -49,7 +49,7 @@ def test3():
     d.alphabet = ['a', 'b']
     print(d.all_regex() + '\n')
 
-#test3()
+test3()
 
 def test4():
     #pg 17 Example 3.2 from Automata & Computability

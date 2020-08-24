@@ -35,11 +35,15 @@ if __name__ == '__main__':
             print('id:', st.id, ', outpaths: ', [(k, v.id) for k,v in st.outpaths.items()])
         dnfa_window(my_dfa, opt, inp=True)
 
-    elif option == 4:
+    elif option == 4 or option == 5:
         automaton = Regex('')
         opt = 'regex'
         inp_window(automaton, opt)
         automaton.dfa_maker()
         my_dfa = automaton.my_dfa
         opt = 'dfa'
-        dnfa_window(my_dfa, opt, inp=True)
+        if option == 4:
+            dnfa_window(my_dfa, opt, inp=True)
+        elif option == 5:
+            my_dfa.take_dfa_complement()
+            rand_window(my_dfa.complement)

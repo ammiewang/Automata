@@ -228,6 +228,9 @@ class DFA():
                                 min_index = min(s1.index, s2.index)
                                 if self.matrix[min_index][max_index] is not None and \
                                 self.matrix[min_index][max_index] != round_num:
+                                    #2nd condition not required but makes
+                                    #for better distinction between rounds
+                                    #maybe delete
                                     self.matrix[i][j] = round_num
                                     cont = True
                                     break
@@ -296,3 +299,10 @@ class DFA():
         self.start_state = self.new_start_state
         self.accept_states = self.new_acc_states
         self.remove_unreachable()
+
+    def take_dfa_complement(self):
+        new_acc = set(self.states).difference(set(self.accept_states))
+        self.complement = DFA(self.states)
+        self.complement.start_state = self.start_state
+        self.complement.accept_states = list(new_acc)
+        self.complement.alphabet = self.alphabet

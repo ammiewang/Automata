@@ -19,6 +19,7 @@ class MenuWindow(Gtk.Window):
         option_store.append([2, "2. Minimize DFA"])
         option_store.append([3, "3. NFA to DFA"])
         option_store.append([4, "4. RegEx to DFA"])
+        option_store.append([5, "5. RegEx Complement"])
 
         self.name_combo = Gtk.ComboBox.new_with_model(option_store)
         renderer_text = Gtk.CellRendererText()

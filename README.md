@@ -22,6 +22,9 @@
 #### Regexes
 - Regex to DFA conversion
   - Parses the regex, converts the regex to an NFA, converts the NFA to a DFA, and minimizes the DFA
+- Regex Complementation
+  - Converts the regex to a DFA, takes the complement of the DFA, and converts this complement into a new regex
+
 
 ### Running the Program
 - To input your own DFA/NFA/regex, run main.py
