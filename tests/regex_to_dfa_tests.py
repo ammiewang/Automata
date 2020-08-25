@@ -1,6 +1,7 @@
 from automata.regex import Regex
 
 def test1():
+    #2a in HW3 in Automata & Computability
     ex = Regex('(000* + 111*)*')
     ex.dfa_maker()
     ex.my_dfa.print_dfa()
@@ -22,6 +23,7 @@ def test1():
 #test1()
 
 def test2():
+    #2b in HW3 in Automata & Computability
     ex = Regex('(01 + 10)(01 + 10)(01 + 10)')
     ex.dfa_maker()
     ex.my_dfa.print_dfa()
@@ -49,6 +51,7 @@ def test2():
 #test2()
 
 def test3():
+    #2c in HW3 in Automata & Computability
     ex = Regex('(0 +  1(01*0)*1)*')
     ex.dfa_maker()
     ex.my_dfa.print_dfa()
