@@ -21,7 +21,7 @@ class DFA():
         while len(start_pts) > 0:
             new_starts = []
             for char1, pt, anc in start_pts:
-                ancestors = [y for x,y in anc]
+                ancestors = {y for x,y in anc}
                 for char2, pt2 in pt.outpaths.items():
                     visited = False
                     if pt2 in ancestors:

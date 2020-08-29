@@ -68,6 +68,8 @@ class NFA():
 
 
     def nfa_to_dfa(self):
+        try: self.alphabet.remove('ε')
+        except: pass
 
         self.new_ss = state({s.id for s in self.start_states})
         temp_op = {key: set() for key in self.alphabet + ['ε']}
