@@ -14,13 +14,14 @@ class DFA():
 
     def possible_paths(self, left_out, origin, dest, final=False):
 
-        start_pts = [(None, origin, [(None, origin)])]
+        start_pts = [[(None, origin)]]
         paths = []
         loops = set()
 
         while len(start_pts) > 0:
             new_starts = []
-            for char1, pt, anc in start_pts:
+            for anc in start_pts:
+                _, pt = anc[-1]
                 ancestors = {y for x,y in anc}
                 for char2, pt2 in pt.outpaths.items():
                     visited = False
@@ -30,7 +31,7 @@ class DFA():
 
                     if not visited and pt2 not in left_out and pt2.id != dest.id: #and \
                     #(char2, pt2, anc + [(char2, pt2)]) not in new_starts:
-                        new_starts.append((char2, pt2, anc + [(char2, pt2)]),)
+                        new_starts.append(anc + [(char2, pt2)])
 
                     elif pt2.id == dest.id and not final:
                         if pt.id == origin.id and pt2.id == pt.id and pt not in left_out:
