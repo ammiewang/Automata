@@ -1,6 +1,10 @@
 # Automata
   performs various conversions on DFAs, NFAs, and regular expressions
 
+### Currently Working On
+- Context Free Grammars
+- Pushdown Automata
+
 ### Requirements
 - Python 3
 - pgi/PyGObject
