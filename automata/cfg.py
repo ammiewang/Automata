@@ -102,41 +102,6 @@ class CFG:
 
         self.rules = new_rules
 
-    def elim_nonexistent(self):
-        new_nonterms = self.nts_for_terms()
-
-        visited = set()
-        curr_nt = {nt for nt in new_nonterms}
-        cont = True
-        while cont:
-            cont = False
-            add_to_nonterms = set()
-            for nt in curr_nt:
-                for nt2, prod2 in self.rules.items():
-                    for str in prod2:
-                        if nt in str and nt2 not in add_to_nonterms and nt2 not in visited:
-                            visited.add(nt2)
-                            add_to_nonterms.add(nt2)
-                            cont = True
-            new_nonterms = new_nonterms.union(add_to_nonterms)
-            curr_nt = add_to_nonterms
-
-        new_rules = {}
-        for nt, prod in self.rules.items():
-            if nt in new_nonterms:
-                new_rules[nt] = []
-                for str in prod:
-                    if self.is_terminal(str):
-                        new_rules[nt].append(str)
-                    else:
-                        include = True
-                        for char in str:
-                            if not self.is_terminal(char) and char not in new_nonterms:
-                                include = False
-                        if include:
-                            new_rules[nt].append(str)
-        self.rules = new_rules
-
     def elim_unreachable(self):
         #new_rules = {self.start: self.rules[self.start]}
         new_rules = {}
@@ -217,6 +182,9 @@ class CFG:
             if nt not in new_no_unit_prod:
                 new_no_unit_prod[nt] = prods
 
+        for nt, prods in new_no_unit_prod.items():
+            new_no_unit_prod[nt] = self.unique(prods)
+
         self.rules = new_no_unit_prod
         self.reduce()
 
@@ -296,11 +264,13 @@ class CFG:
     def reduce(self):
         self.elim_nonterminating()
         self.elim_unreachable()
+        #make sure all productions of a nonterminal are unique?
 
     def reduce_no_units_or_nulls(self):
         self.reduce()
         self.elim_null()
         self.elim_unit()
+        #make sure all productions of a nonterminal are unique?
 
     def new_ss(self):
         self.rules['0'] = [self.start]
