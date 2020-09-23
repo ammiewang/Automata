@@ -1,4 +1,6 @@
 import string
+from automata.state import state
+#from automata.pda import PDA
 
 class CFG:
     def __init__(self, rules):
@@ -11,6 +13,8 @@ class CFG:
         #all letters in ^ are lowercase
 
     def find_terms_nonterms(self):
+        self.terminals = set()
+        self.nonterminals = set()
         for nt, prods in self.rules.items():
             for str in prods:
                 for char in str:
@@ -20,18 +24,86 @@ class CFG:
                     elif not term and char not in self.nonterminals:
                         self.nonterminals.add(char)
 
+        if self.start not in self.nonterminals:
+            self.nonterminals.add(self.start)
+
         for c in self.nonterminals:
-            self.new_syms.remove(c)
+            if c in self.new_syms:
+                self.new_syms.remove(c)
 
     def is_terminal(self, str):
-        return str.islower() or str == 'ε'
+        try:
+            return str.islower() or str == 'ε'
+        except:
+            for s in str:
+                if not (s.islower() or s == 'ε'):
+                    return False
+            return True
 
-    def elim_nonterminating(self):
+    def nts_for_terms(self):
         new_nonterms = set()
         for nt, prod in self.rules.items():
             for str in prod:
                 if self.is_terminal(str) and nt not in new_nonterms:
                     new_nonterms.add(nt)
+        return new_nonterms
+
+    def reachable_from_nt(self, ch):
+        cont = True
+        visited = set()
+        curr = set([ch])
+        while cont:
+            cont = False
+            next = set()
+            for nt in curr:
+                if nt in self.rules:
+                    prods = self.rules[nt]
+                    for str in prods:
+                        for char in str:
+                            if not self.is_terminal(char) and char not in visited:
+                                next.add(char)
+                                visited.add(char)
+                                cont = True
+            curr = next
+
+        return visited
+
+    def elim_nonterminating(self):
+        new_rules = {}
+        new_nonterms = self.nts_for_terms()
+        self.find_terms_nonterms()
+        reaches = {}
+        nonexistent = set()
+
+        curr = self.rules.copy()
+        cont = True
+        while cont:
+            cont = False
+            for nt, prods in curr.items():
+                new_rules[nt] = []
+                for str in prods:
+                    include = True
+                    for char in str:
+                        x = self.reachable_from_nt(nt)
+                        if (not self.is_terminal(char) and char not in self.rules) or \
+                        (not self.is_terminal(char) and \
+                        len(x.intersection(new_nonterms)) == 0 \
+                        and char not in new_nonterms):
+                            include = False
+                            break
+                    if include:
+                        new_rules[nt].append(str)
+                    else:
+                        cont = True
+                if len(new_rules[nt]) == 0:
+                    del new_rules[nt]
+            curr = new_rules.copy()
+            self.rules = new_rules.copy()
+
+        self.rules = new_rules
+
+    def elim_nonexistent(self):
+        new_nonterms = self.nts_for_terms()
 
         visited = set()
         curr_nt = {nt for nt in new_nonterms}
@@ -68,7 +140,7 @@ class CFG:
     def elim_unreachable(self):
         #new_rules = {self.start: self.rules[self.start]}
         new_rules = {}
-        curr_nonterms = set(self.start)
+        curr_nonterms = set([self.start])
         #visited = set()
         cont = True
         while cont:
@@ -130,7 +202,6 @@ class CFG:
     def elim_unit(self):
         new_no_unit_prod = {}
         unit_prods, not_unit_prods = self.find_unit_prod_pairs()
-        #print(not_unit_prods)
         for nt,prods in unit_prods.items():
             try:
                 new_prods = not_unit_prods[nt][:]
@@ -177,10 +248,10 @@ class CFG:
         return new_lst
 
     def elim_null(self):
-        #cont = True
         new_grammar = self.rules
         nts_to_replace = self.find_null_prod(new_grammar)
         cont = True if len(nts_to_replace) > 0 else False
+        all_nts_to_replace = nts_to_replace.copy()
 
         while cont:
             cont = False
@@ -203,11 +274,12 @@ class CFG:
                     new_grammar[nt] += new_prods
 
             for nt, prods in new_grammar.items():
-                #if 'ε' in prods and nt != self.start and nt in nts_to_replace:
-                if nt in nts_to_replace and nt != self.start:
+                if 'ε' in prods and nt in all_nts_to_replace and nt != self.start:
                     new_grammar[nt].remove('ε')
 
-            nts_to_replace = self.find_null_prod(new_grammar)
+            nts_to_replace = self.find_null_prod(new_grammar)#.difference(all_nts_to_replace)
+            all_nts_to_replace = all_nts_to_replace.union(nts_to_replace)
+            #print(self.find_null_prod(new_grammar), nts_to_replace, all_nts_to_replace)
 
             if len(nts_to_replace) > 0:
                 cont = False if nts_to_replace == set([self.start]) and start_ep else True
@@ -217,6 +289,7 @@ class CFG:
         for nt, prods in new_grammar.items():
             new_grammar[nt] = self.unique(prods)
 
+        new_grammar = {k:v for k,v in new_grammar.items() if len(v) > 0}
         self.rules = new_grammar
         self.reduce()
 
@@ -230,7 +303,7 @@ class CFG:
         self.elim_unit()
 
     def new_ss(self):
-        self.rules['0'] = self.start
+        self.rules['0'] = [self.start]
         self.start = '0'
 
     def replace_terms(self):
@@ -245,10 +318,11 @@ class CFG:
 
         for t in self.terminals:
             if t not in already_exists:
-                if t.upper() not in self.nonterminals:
+                if t != 'ε' and t.upper() not in self.nonterminals:
                     new_nt[t.upper()] = [t]
                     new_nt_rev[t] = t.upper()
-                    self.new_syms.remove(t.upper())
+                    if t.upper() in self.new_syms:
+                        self.new_syms.remove(t.upper())
                     self.nonterminals.add(t.upper())
                 else:
                     new_nt[self.new_syms[0]] = [t]
@@ -443,6 +517,7 @@ class CFG:
         self.elim_unit()
         self.replace_terms()
         self.replace_long_seqs()
+        self.reduce()
 
     def convert_to_gnf(self):
         #self.find_terms_nonterms()
@@ -450,6 +525,32 @@ class CFG:
         self.determine_ordering()
         self.check_ij_form()
         self.fix_gnform()
+        self.reduce()
+
+    def convert_to_pda(self):
+        from automata.pda import PDA
+        self.convert_to_gnf()
+
+        s = state(0)
+        p = PDA(set([s]), self.start)
+        self.find_terms_nonterms()
+        p.alphabet = self.terminals.difference(set(['ε']))
+        p.stack_symbols = self.nonterminals.union(p.alphabet)
+        terms = self.terminals.difference(set(['ε']))
+
+        for t in terms:
+            s.outpaths[(t, t)] = set([(s, 'ε')])
+
+        for nt in self.nonterminals:
+            prods = self.rules[nt]
+            for str in prods:
+                if ('ε', nt) in s.outpaths:
+                    s.outpaths[('ε', nt)].add((s, str))
+                else:
+                    s.outpaths[('ε', nt)] = set([(s, str)])
+
+        self.my_pda = p
+        self.my_pda.start_state = s
 
     def print_cfg(self):
         for nt, prods in self.rules.items():
@@ -457,6 +558,18 @@ class CFG:
             for str in prods:
                 s += str + ' | '
             s = s[:-3]
+            if nt != self.start:
+                print(nt + ' --> ' + s)
+            else:
+                print(nt + '*' + ' --> ' + s)
+
+    def print_converted_cfg(self):
+        for nt, prods in self.rules.items():
+            s = ''
+            for str in prods:
+                s2 = ' '.join(str)
+                s += s2 + '  |  '
+            s = s[:-5]
             if nt != self.start:
                 print(nt + ' --> ' + s)
             else:

@@ -107,14 +107,13 @@ def test7():
     Correct Output:
 
     0* --> AE | AF | AD | AB
+    A --> a
+    B --> b
+    F --> XB
+    E --> XD
+    D --> BX
     X --> AY | a | BY | b
     Y --> c | AY | a | BY | b
-    B --> b
-    C --> c
-    A --> a
-    D --> BX
-    E --> XD
-    F --> XB
     """
 #test7()
 
@@ -128,10 +127,9 @@ def test8():
     """
     Correct Output:
 
-    0* --> AB | a
-    B --> BA | b
-    A --> a
-    C --> b
+    0* --> CB | a
+    B --> BC | b
+    C --> a
     """
 #test8()
 
@@ -145,11 +143,9 @@ def test9():
     """
     Correct Output:
 
-    D --> bBD | bBBBD | bABBD | bBDBBD | bADBBD | bB | bBBB | bABB | bBDBB | bADBB
-    0* --> bA | bB | bBBB | bABB | bBDBB | bADBB
+    0* --> bA | bB | bABB | bBBB | bADBB | bBDBB
+    B --> b | bAB | bBB | bADB | bBDB
+    D --> bBD | bABBD | bBBBD | bADBBD | bBDBBD | bB | bABB | bBBB | bADBB | bBDBB
     A --> a
-    B --> b | bBB | bAB | bBDB | bADB
-    C --> b
-    S --> bB | bA | bBD | bAD
     """
 #test9()
