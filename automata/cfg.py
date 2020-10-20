@@ -9,6 +9,10 @@ class CFG:
         self.terminals = set()
         self.nonterminals = set()
         self.new_syms = list(string.ascii_uppercase) # TODO: need backup alphabet in case we run out
+        self.other_terminals = set(['+', '-', '*', '/', '%', '^', '(', ')', '[', ']', '{', '}', '!', '=', '~'])
+        self.firsts_found = False
+        self.follows_found = False
+        self.predicts_found = False
         #self.new_syms = ['α', 'β', 'ξ', 'δ', 'φ', 'γ', 'η', 'ι', 'ς', 'κ', 'λ', 'μ', 'ν', 'π', 'θ', 'ρ', 'σ', 'τ', 'υ', 'ω', 'χ', 'ψ', 'ζ']
         #all letters in ^ are lowercase
 
@@ -33,10 +37,10 @@ class CFG:
 
     def is_terminal(self, str):
         try:
-            return str.islower() or str == 'ε'
+            return str.islower() or str == 'ε' or str in self.other_terminals
         except:
             for s in str:
-                if not (s.islower() or s == 'ε'):
+                if not (s.islower() or s == 'ε' or str in self.other_terminals):
                     return False
             return True
 
@@ -132,7 +136,7 @@ class CFG:
         not_unit_prods = {}
         for nt, prod in self.rules.items():
             for str in prod:
-                if len(str) == 1 and str.isupper():
+                if len(str) == 1 and not self.is_terminal(str): #change isupper in case of list
                     if nt in unit_prods:
                         unit_prods[nt].append(str)
                     else:
@@ -273,8 +277,11 @@ class CFG:
         #make sure all productions of a nonterminal are unique?
 
     def new_ss(self):
-        self.rules['0'] = [self.start]
-        self.start = '0'
+        while self.new_syms[0] in self.rules:
+            self.new_syms.pop(0)
+        new_start = self.new_syms.pop(0)
+        self.rules[new_start] = [self.start]
+        self.start = new_start
 
     def replace_terms(self):
         self.find_terms_nonterms()
@@ -521,6 +528,242 @@ class CFG:
 
         self.my_pda = p
         self.my_pda.start_state = s
+
+    def elim_left_rec_with_ep(self):
+        new_rules = {}
+        for nt, prods in self.rules.items():
+            new_nt_made = False
+            new_rules[nt] = []
+            nonrecursing = set()
+            for prod in prods:
+                if prod[0] == nt:
+                    if not new_nt_made:
+                        while self.new_syms[0] in self.rules:
+                            self.new_syms.pop(0)
+                        new_nt = self.new_syms.pop(0)
+                        new_rules[new_nt] = ['ε']
+                        new_nt_made = True
+                    new_rules[new_nt].append(prod[1:] + new_nt)
+                else:
+                    nonrecursing.add(prod)
+            if not new_nt_made:
+                new_rules[nt] = prods
+            else:
+                for prod in nonrecursing:
+                    if prod != 'ε':
+                        new_rules[nt].append(prod + new_nt)
+                    else:
+                        new_rules[nt].append(prod)
+        self.rules = new_rules
+
+    def check_repeats(self, nt, prods):
+        firsts = {}
+        for prod in prods:
+            try:
+                if prod[0] not in firsts:
+                    firsts[prod[0]] = [prod]
+                else:
+                    firsts[prod[0]].append(prod)
+            except:
+                pass
+        return firsts
+
+    def elim_common_subexpr_round(self):
+        new_rules = {}
+        new_round = False
+        for nt, prods in self.rules.items():
+            firsts = self.check_repeats(nt, prods)
+            new_rules[nt] = []
+            #prods_temp = prods[:]
+            if len(firsts) == len(prods):
+                new_rules[nt] = prods
+            else:
+                new_round = True
+                for key, val in firsts.items():
+                    if len(val) == 1:
+                        new_rules[nt].append(val[0])
+                    else:
+                        while self.new_syms[0] in self.rules:
+                            self.new_syms.pop(0)
+                        new_nt = self.new_syms.pop(0)
+                        new_rules[new_nt] = []
+                        for prod2 in val:
+                            if len(prod2[1:]) >= 1:
+                                new_rules[new_nt].append(prod2[1:])
+                            else:
+                                new_rules[new_nt].append('ε')
+                        new_rules[nt].append(key + new_nt)
+        self.rules = new_rules
+        return new_round
+
+    def elim_common_subexpression(self):
+        cont = True
+        while cont:
+            cont = self.elim_common_subexpr_round()
+
+    def find_all_null_possible(self):
+        cont = True
+        eps = self.find_null_prod(self.rules)
+        while cont:
+            cont = False
+            new_eps = set()
+            for nt, prods in self.rules.items():
+                for prod in prods:
+                    is_ep = True
+                    for char in prod:
+                        if char not in eps:
+                            is_ep = False
+                            break
+                    if is_ep:
+                        new_eps.add(nt)
+                        cont = True
+            eps = eps.union(new_eps)
+        return eps
+
+    def prod_first_set(self, prod):
+        if not self.firsts_found:
+            self.first_sets()
+        first = set()
+
+        if self.is_terminal(prod[0]):
+            return set([prod[0]])
+        else:
+            while len(prod) > 0 and not self.is_terminal(prod[0]) and 'ε' in self.firsts[prod[0]]:
+                first = first.union(fs[prod[0]]).difference('ε')
+                prod = prod[1:]
+            if len(prod) == 0:
+                first.add('ε')
+            elif self.is_terminal(prod[0]):
+                first.add(prod[0])
+            else:
+                first = first.union(self.firsts[prod[0]])
+            return first
+
+
+    def first_sets(self):
+        first_sets_dict = {}
+        also_inherits_from = {}
+        eps = self.find_all_null_possible()
+        self.eps = eps
+
+        for nt, prods in self.rules.items():
+            first_sets_dict[nt] = set()
+            also_inherits_from[nt] = set()
+            for prod in prods:
+                if self.is_terminal(prod[0]):
+                    first_sets_dict[nt].add(prod[0])
+                else:
+                    also_inherits_from[nt].add(prod[0])
+                    str = prod
+                    while str[0] in eps:
+                        str = str[1:]
+                        if len(str) > 0:
+                            also_inherits_from[nt] = also_inherits_from[nt].union(set([str[0]]))
+                        else:
+                            break
+
+        for nt in first_sets_dict:
+            if nt in eps and 'ε' not in first_sets_dict[nt]:
+                first_sets_dict[nt].add('ε')
+
+        for nt, other_nts in also_inherits_from.items():
+            cont = True
+            temp = other_nts
+            visited = set([nt])
+            while cont:
+                cont = False
+                for prod in temp:
+                    if prod not in visited:
+                        temp = temp.union(also_inherits_from[prod]).difference(set([nt])) #difference part optional
+                        visited.add(prod)
+                        cont = True
+            also_inherits_from[nt] = temp
+
+        for nt, other_nts in also_inherits_from.items():
+            for prod in other_nts:
+                first_wo_ep = first_sets_dict[prod].difference('ε')
+                first_sets_dict[nt] = first_sets_dict[nt].union(first_wo_ep)
+
+        self.firsts = first_sets_dict
+        self.firsts_found = True
+        return first_sets_dict
+
+    def follow_sets(self):
+        if not self.firsts_found:
+            self.first_sets()
+        eps = self.find_all_null_possible()
+
+        also_inherits_from_follow = {}
+        follow_sets = {self.start: set(['$'])}
+
+        for nt in self.rules:
+            if nt != self.start:
+                follow_sets[nt] = set()
+
+            also_inherits_from_follow[nt] = set()
+
+            for nt2, prods in self.rules.items():
+                for prod in prods:
+                    if nt in prod:
+                        ind_of_nt = prod.index(nt)
+                        if ind_of_nt == len(prod)-1:
+                            also_inherits_from_follow[nt].add(nt2)
+                        elif self.is_terminal(prod[ind_of_nt+1]): #should never be epsilon
+                            follow_sets[nt].add(prod[ind_of_nt+1])
+                        else:
+                            first_prod_set = self.prod_first_set(prod[ind_of_nt+1:])
+                            follow_sets[nt] = follow_sets[nt].union(first_prod_set).difference('ε')
+
+        for nt, other_nts in also_inherits_from_follow.items():
+            cont = True
+            temp = other_nts
+            visited = set([nt])
+            while cont:
+                cont = False
+                for prod in temp:
+                    if prod not in visited:
+                        temp = temp.union(also_inherits_from_follow[prod]).difference(set([nt])) #difference part optional
+                        visited.add(prod)
+                        cont = True
+            also_inherits_from_follow[nt] = temp
+
+        for nt, other_nts in also_inherits_from_follow.items():
+            for prod in other_nts:
+                follow_sets[nt] = follow_sets[nt].union(follow_sets[prod])
+
+        self.follows = follow_sets
+        self.follows_found = True
+        return follow_sets
+
+    def predict_sets(self):
+        if not self.firsts_found:
+            self.first_sets()
+        if not self.follows_found:
+            self.follow_sets()
+        predict = {}
+        for nt, prods in self.rules.items():
+            for prod in prods:
+                pfs = self.prod_first_set(prod)
+                if 'ε' not in pfs:
+                    predict[(nt,prod)] = pfs
+                else:
+                    predict[(nt,prod)] = pfs.difference('ε').union(self.follows[nt])
+        self.predicts = predict
+        return predict
+
+    def make_parse_table(self):
+        if not self.predicts_found:
+            self.predict_sets()
+        table = {}
+        for key, vals in self.predicts.items():
+            nt, prod = key
+            for val in vals:
+                if (nt, val) not in table:
+                    table[(nt, val)] = set([prod])
+                else:
+                    table[(nt, val)].add(prod)
+        self.parse_table = table
+
 
     def print_cfg(self):
         for nt, prods in self.rules.items():
