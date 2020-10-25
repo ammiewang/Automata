@@ -1,9 +1,5 @@
 import random
-from display.dfa_regex_window import ToRegExWindow, AnsWindow
 from automata.state import state, path
-import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
 
 class DFA():
     def __init__(self, states):
@@ -113,21 +109,14 @@ class DFA():
                     choices.remove(s)
                 choice = random.choice(choices)
             else:
-                if not window:
-                    print('Start state: ', s1.id, ', End state: ', s2.id)
-                    print('States currently left out: ', [state.id for state in left_out])
-                    choice_id = int(input('Choose a state not listed above to leave out: '))
-                    print('\n')
-                    for s in self.states:
-                        if s.id == choice_id:
-                            choice = s
-                            break
-                else:
-                    win = ToRegExWindow(self, s1, s2, left_out)
-                    win.connect("destroy", Gtk.main_quit)
-                    win.show_all()
-                    Gtk.main()
-                    choice = self.choice
+                #print('Start state: ', s1.id, ', End state: ', s2.id)
+                #print('States currently left out: ', [state.id for state in left_out])
+                #choice_id = int(input('Choose a state not listed above to leave out: '))
+                #print('\n')
+                for s in self.states:
+                    if s.id == choice_id:
+                        choice = s
+                        break
 
             new_left_out = left_out[:] + [choice]
             #print(s1.id, s2.id, choice.id)
