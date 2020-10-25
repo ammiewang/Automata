@@ -1,5 +1,4 @@
 import random
-from automata.state import state, path
 
 class DFA():
     def __init__(self, states):
