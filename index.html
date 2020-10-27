@@ -1,11 +1,231 @@
 <!DOCTYPE html>
-<html>
+<meta charset="utf-8"/>
+<html lang="en">
   <head>
     <title>Automata</title>
     <link href="site.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.4.0/brython.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.4.0/brython_stdlib.js"></script>
   </head>
-  <body>
-    <h1 class="party">Automata</h1>
-    <p>This will be my automata page.</p>
+  <body onload="brython()">
+    <div id="automata" class="wrapper">
+      <h1>Choose Input Type</h1>
+      <script src="site.js"></script>
+     <button id="dfa" class="button" onclick="switchPages('automata', 1)">DFA</button>
+     <button id="nfa" class="button" onclick="switchPages('automata', 2)">NFA</button>
+     <button id="re" class="button" onclick="switchPages('automata', 3)">RegEx</button>
+     <button id="cfg" class="button" onclick="switchPages('automata', 4)">CFG</button>
+     <button id="pda" class="button" onclick="switchPages('automata', 5)">PDA</button>
+   </div>
+   <div id="operation" style="display:none" class="wrapper">
+     <h1>Choose Operation</h1>
+     <script src="site.js"></script>
+     <div id="dfaop" style="display:none" class="wrapper">
+        <button id="dfa2re" class="button" onclick="switchPages('dfaop', 1)">DFA to RegEx</button>
+        <button id="mindfa" class="button" onclick="switchPages('dfaop', 2)">Minimize DFA</button>
+    </div>
+    <div id="nfaop" style="display:none" class="wrapper">
+       <button id="nfa2dfa" class="button" onclick="switchPages('nfaop', 1)">NFA to DFA</button>
+    </div>
+    <div id="reop" style="display:none" class="wrapper">
+      <button id="re2dfa" class="button"  onclick="switchPages('reop', 1)">RegEx to DFA</button>
+      <button id="recomp" class="button" onclick="switchPages('reop', 2)">RegEx Complement</button>
+    </div>
+    <div id="cfgop" style="display:none" class="wrapper">
+      <button id="cfg2pda" class="button"  onclick="switchPages('cfgop', 1)">CFG to PDA</button>
+      <button id="simgram" class="button" onclick="switchPages('cfgop', 2)">Simplify Grammar</button>
+      <button id="elimnull" class="button" onclick="switchPages('cfgop', 3)">Eliminate Null Productions</button>
+      <button id="elimunit" class="button" onclick="switchPages('cfgop', 4)">Eliminate Unit Productions</button>
+      <button id="first" class="button" onclick="switchPages('cfgop', 5)">First Sets</button>
+      <button id="follow" class="button" onclick="switchPages('cfgop', 6)">Follow Sets</button>
+      <button id="predict" class="button" onclick="switchPages('cfgop', 7)">Predict Sets</button>
+    </div>
+    <div id="pdaop" style="display:none" class="wrapper">
+      <button id="pda2cfg" class="button"  onclick="switchPages('pdaop', 1)">PDA to CFG</button>
+    </div>
+  </div>
+  <div id="dnfa_gen" style="display:none" class="wrapper" from="none">
+    <h1>DFA/NFA Chart Generator</h1>
+    <label for="num_states">Number of States:</label>
+    <input type="text" id="num_states" name="num_states"><br><br>
+    <label for="ss">Start State(s):</label>
+    <input type="text" id="ss" name="ss"><br><br>
+    <label for="accs">Accept State(s):</label>
+    <input type="text" id="accs" name="accs"><br><br>
+    <label for="alphabet">Alphabet:</label>
+    <input type="text" id="alphabet" name="alphabet"><br><br>
+    <button id="enter_dnfa_gen" onclick="enterDNFA()">Enter</button>
+  </div>
+  <div id="dnfa_inp" style="display:none" class="wrapper">
+    <h1>DFA/NFA Input</h1>
+    <button id="enter_dnfa_inp" onclick="dnfaGenRegex()">Enter</button>
+  </div>
+  <div id="dfa2reg_ans_pg" style="display:none" class="wrapper">
+    <h1>RegEx Result</h1>
+    <input type="text" id="reg_ans"><br><br>
+  </div>
+  <div id="min_dfa" style="display:none" class="wrapper">
+    <h1>Minimized DFA</h1>
+    <table class="center" id="min_table">
+    </table>
+  </div>
+  <div id="nfa_dfa_ans" style="display:none" class="wrapper">
+    <h1>DFA Result</h1>
+    <table class="center" id="nfa2dfa_table">
+    </table>
+  </div>
   </body>
 </html>
+<script type="text/python">
+from browser import document
+from browser import window
+import urllib.request
+
+a = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/state.py")
+exec(a.read())
+
+b = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/dfa.py")
+exec(b.read())
+
+c = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/nfa.py")
+exec(c.read())
+
+def make_dfa_wrapper():
+  sts = []
+  rows = len(document["rows"].children)
+  cols = len(document["rows"].children[1].children)
+  alph = document["alphabet"].value.split()
+
+  for i in range(rows):
+    s = state(i)
+    sts.append(s)
+
+  for i in range(rows):
+    s = sts[i]
+    s.outpaths = {}
+    for j in range(1, cols):
+      try:
+        ind = int(document["original_table"].children[1].children[i].children[j].children[0].value)
+        s.outpaths[alph[j-1]] = sts[ind]
+      except:
+        continue
+
+  d = DFA(sts)
+  d.start_state = sts[int(document["ss"].value)]
+  d.alphabet = alph
+  acc_list = document["accs"].value.split()
+  d.accept_states = [sts[int(i)] for i in acc_list]
+  return d
+
+def make_nfa_wrapper():
+  sts = []
+  rows = len(document["rows"].children)
+  cols = len(document["rows"].children[1].children)
+  alph = document["alphabet"].value.split()
+
+  for i in range(rows):
+    s = state(i)
+    sts.append(s)
+  print(sts)
+  for i in range(rows):
+    s = sts[i]
+    s.outpaths = {}
+    for j in range(1, cols):
+      s.outpaths[alph[j-1]] = []
+      lst = document["original_table"].children[1].children[i].children[j].children[0].value.split(" ")
+      for st2 in lst:
+        try:
+          s.outpaths[alph[j-1]].append(sts[int(st2)])
+        except:
+          continue
+
+  n = NFA(sts)
+  ss_list = document["ss"].value.split()
+  n.start_states = [sts[int(i)] for i in ss_list]
+  n.alphabet = alph
+  acc_list = document["accs"].value.split()
+  n.accept_states = [sts[int(i)] for i in acc_list]
+  return n
+
+def render_dfa(d, tab_name):
+  tab = document[tab_name]
+  thead = document.createElement('thead')
+  headRow = document.createElement('tr')
+
+  th = document.createElement('th')
+  th.appendChild(document.createTextNode(''))
+  headRow.appendChild(th)
+
+  for char in d.alphabet:
+    th = document.createElement('th')
+    th.appendChild(document.createTextNode(char))
+    headRow.appendChild(th)
+
+  thead.appendChild(headRow)
+
+  tbody = document.createElement('tbody')
+  tbody.setAttribute("id", "new_rows")
+
+  for st in d.states:
+    tr = document.createElement('tr')
+    lab = document.createElement('label')
+    lab.innerHTML = st.id
+    tr.appendChild(lab);
+    if (st in d.accept_states):
+      if (st.id == d.start_state.id):
+        lab.innerHTML = "=> " + str(d.start_state.id) + " F"
+      else:
+        lab.innerHTML = str(st.id) + " F"
+    else:
+      if (st.id == d.start_state.id):
+        lab.innerHTML = "=> " + str(d.start_state.id)
+      else:
+        lab.innerHTML = str(st.id)
+
+    for letter in d.alphabet:
+      td = document.createElement('td')
+      td.classList.add("input")
+      input = document.createElement('input')
+      input.type = "text"
+      if letter in st.outpaths:
+        input.value = st.outpaths[letter].id
+      td.appendChild(input);
+      tr.appendChild(td);
+
+
+    tbody.appendChild(tr);
+
+  tab.appendChild(thead);
+  tab.appendChild(tbody);
+
+def dfa2regex():
+  document["dfa2reg_ans_pg"].style.display = "block"
+  d = make_dfa_wrapper()
+  d.all_regex()
+  r = d.regex
+  document["reg_ans"].value = r
+
+def mindfa():
+  document["min_dfa"].style.display = "block"
+  d = make_dfa_wrapper()
+  d.minimize()
+  render_dfa(d, "min_table")
+
+def nfa2dfa():
+  document["nfa_dfa_ans"].style.display = "block"
+  n = make_nfa_wrapper()
+  n.nfa_to_dfa()
+  render_dfa(n.my_dfa, "nfa2dfa_table")
+
+def dnfa_ops(event):
+  f = document["dnfa_gen"].getAttribute("from")
+  if f == "dfa2re":
+    dfa2regex()
+  elif f == "mindfa":
+    mindfa()
+  elif f == "nfa2dfa":
+    nfa2dfa()
+
+document["enter_dnfa_inp"].bind("click", dnfa_ops)
+</script>

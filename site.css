@@ -2,3 +2,27 @@ body {
   background-color: white;
   color: black;
 }
+
+h1 {text-align: center;}
+
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.button {
+  border: none;
+  color: black;
+  padding: 75px 150px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  justify-content: center;
+  font-size: 32px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
