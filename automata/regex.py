@@ -1,7 +1,3 @@
-from automata.nfa import NFA
-from automata.dfa import DFA
-from automata.state import state
-
 class Regex:
     def __init__(self, ex):
         new_ex = ex.replace(' ', '')

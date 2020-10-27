@@ -1,6 +1,3 @@
-from automata.state import state, path
-from automata.dfa import DFA
-
 class NFA():
     def __init__(self, states):
         self.start_states = []

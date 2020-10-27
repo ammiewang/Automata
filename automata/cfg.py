@@ -1,6 +1,4 @@
 import string
-from automata.state import state
-#from automata.pda import PDA
 
 class CFG:
     def __init__(self, rules):

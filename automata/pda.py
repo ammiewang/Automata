@@ -1,6 +1,5 @@
 from collections import deque
 from random import choice
-from automata.state import state
 
 class PDA:
     def __init__(self, states, init_stack_sym=None):
@@ -17,7 +16,6 @@ class PDA:
         self.stack = deque(self.init_stack_symbol)
 
     def to_cfg(self):
-        from automata.cfg import CFG
         self.my_cfg = CFG({})
 
         self.count = 0
