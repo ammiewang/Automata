@@ -31,6 +31,16 @@ function switchPages(came_from, selection) {
       var div3 = document.getElementById("dnfa_gen");
       div3.style.display = "block";
       div3.setAttribute("from", "nfa2dfa")
+    } else if (came_from == "reop"){
+      var div2 = document.getElementById("operation");
+      div2.style.display = "none";
+      var div3 = document.getElementById("re_inp");
+      div3.style.display = "block";
+      if (selection == 1){
+        div3.setAttribute("from", "re2dfa");
+      } else if (selection == 2){
+        div3.setAttribute("from", "recomp");
+      }
     }
 }
 
