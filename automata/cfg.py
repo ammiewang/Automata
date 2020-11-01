@@ -40,7 +40,7 @@ class CFG:
             return str.islower() or str == 'ε' or str in self.other_terminals
         except:
             for s in str:
-                if not (s.islower() or s == 'ε' or str in self.other_terminals):
+                if not (s.islower() or s == 'ε' or s in self.other_terminals):
                     return False
             return True
 
