@@ -89,6 +89,44 @@
     <h1>RegEx Answer</h1>
     <input type="text" id="re_ans" name="re"><br><br>
   </div>
+  <div id="pda_gen" style="display:none" class="wrapper" from="none">
+    <h1>PDA Chart Generator</h1>
+    <label for="pda_num_states">Number of States:</label>
+    <input type="text" id="pda_num_states" name="num_states"><br><br>
+    <label for="pda_ss">Start State:</label>
+    <input type="text" id="pda_ss" name="ss"><br><br>
+    <label for="pda_accs">Accept State(s):</label>
+    <input type="text" id="pda_accs" name="accs"><br><br>
+    <label for="pda_inp_alphabet">Input Alphabet:</label>
+    <input type="text" id="pda_inp_alphabet" name="alphabet"><br><br>
+    <label for="pda_stack_alphabet">Stack Alphabet:</label>
+    <input type="text" id="pda_stack_alphabet" name="alphabet"><br><br>
+    <button id="enter_pda_gen" onclick="enterPDA()">Enter</button>
+  </div>
+  <div id="pda_transitions" style="display:none" class="wrapper" from="none">
+    <h1>PDA Transitions</h1>
+    <table class="center" id="pda_inp_table">
+      <tbody id="pda_tab_body">
+        <tr>
+          <td class="input">
+            <label class="biglabel">δ ( </label>
+            <input type="text" class="smallbox">
+            <label class="biglabel"> , </label>
+            <input type="text" class="smallbox">
+            <label class="biglabel"> , </label>
+            <input type="text" class="smallbox">
+            <label class="biglabel"> ) = ( </label>
+            <input type="text" class="smallbox">
+            <label class="biglabel"> , </label>
+            <input type="text" class="smallbox">
+            <label class="biglabel"> )</label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick='newPDArow()'>Add Transition</button>
+    <button id="pda_enter">Enter</button>
+  </div>
   </body>
 </html>
 <script type="text/python">
@@ -108,31 +146,38 @@ exec(nfa_link.read())
 re_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/regex.py")
 exec(re_link.read())
 
+cfg_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/cfg.py")
+exec(cfg_link.read())
+
+pda_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/pda.py")
+exec(pda_link.read())
+
 def make_dfa_wrapper():
   sts = []
   rows = len(document["rows"].children)
   cols = len(document["rows"].children[1].children)
   alph = document["alphabet"].value.split()
+  id_to_st = {}
 
   for i in range(rows):
-    s = state(i)
+    st_name = document["original_table"].children[1].children[i].children[0].children[0].value
+    s = state(st_name)
     sts.append(s)
+    id_to_st[st_name] = s
 
   for i in range(rows):
     s = sts[i]
     s.outpaths = {}
     for j in range(1, cols):
-      try:
-        ind = int(document["original_table"].children[1].children[i].children[j].children[0].value)
-        s.outpaths[alph[j-1]] = sts[ind]
-      except:
-        continue
+      st2 = document["original_table"].children[1].children[i].children[j].children[0].value
+      if st2 != "":
+        s.outpaths[alph[j-1]] = id_to_st[st2]
 
   d = DFA(sts)
-  d.start_state = sts[int(document["ss"].value)]
+  d.start_state = id_to_st[document["ss"].value]
   d.alphabet = alph
   acc_list = document["accs"].value.split()
-  d.accept_states = [sts[int(i)] for i in acc_list]
+  d.accept_states = [id_to_st[i] for i in acc_list]
   return d
 
 def make_nfa_wrapper():
@@ -140,11 +185,14 @@ def make_nfa_wrapper():
   rows = len(document["rows"].children)
   cols = len(document["rows"].children[1].children)
   alph = document["alphabet"].value.split()
+  id_to_st= {}
 
   for i in range(rows):
-    s = state(i)
+    st_name = document["original_table"].children[1].children[i].children[0].children[0].value
+    s = state(st_name)
     sts.append(s)
-  print(sts)
+    id_to_st[st_name] = s
+
   for i in range(rows):
     s = sts[i]
     s.outpaths = {}
@@ -152,17 +200,15 @@ def make_nfa_wrapper():
       s.outpaths[alph[j-1]] = []
       lst = document["original_table"].children[1].children[i].children[j].children[0].value.split(" ")
       for st2 in lst:
-        try:
-          s.outpaths[alph[j-1]].append(sts[int(st2)])
-        except:
-          continue
+        if st2 != "":
+          s.outpaths[alph[j-1]].append(id_to_st[st2])
 
   n = NFA(sts)
   ss_list = document["ss"].value.split()
-  n.start_states = [sts[int(i)] for i in ss_list]
+  n.start_states = [id_to_st[i] for i in ss_list]
   n.alphabet = alph
   acc_list = document["accs"].value.split()
-  n.accept_states = [sts[int(i)] for i in acc_list]
+  n.accept_states = [id_to_st[i] for i in acc_list]
   return n
 
 def render_dfa(d, tab_name):
@@ -266,6 +312,54 @@ def re_ops(event):
   elif f == "recomp":
     recomp()
 
+def make_pda():
+  sts = set()
+  num_transitions = len(document["pda_tab_body"].children)
+  inp_alph = document["pda_inp_alphabet"].value.split()
+  stack_alph = document["pda_stack_alphabet"].value.split()
+  id_to_st = {}
+
+  for i in range(num_transitions):
+    st1 = document["pda_tab_body"].children[i].children[0].children[1].value
+    inp1 = document["pda_tab_body"].children[i].children[0].children[3].value
+    stack1 = document["pda_tab_body"].children[i].children[0].children[5].value
+    st2 = document["pda_tab_body"].children[i].children[0].children[7].value
+    stack2 = document["pda_tab_body"].children[i].children[0].children[9].value
+    if st1 not in id_to_st:
+      s = state(st1)
+      sts.add(s)
+      id_to_st[st1] = s
+    if st2 not in id_to_st:
+      s = state(st2)
+      sts.add(s)
+      id_to_st[st2] = s
+    st = id_to_st[st1]
+    if (inp1, stack1) not in st.outpaths:
+      st.outpaths[(inp1, stack1)] = {(id_to_st[st2], stack2)}
+    else:
+      st.outpaths[(inp1, stack1)].add((id_to_st[st2], stack2))
+
+  p = PDA(sts)
+  p.start_state = id_to_st[document["pda_ss"].value]
+  p.input_alphabet = set(inp_alph)
+  p.stack_symbols = set(stack_alph)
+  p.stack_symbols.add(p.init_stack_symbol)
+  acc_list = document["pda_accs"].value.split()
+  p.accept_states = {id_to_st[i] for i in acc_list}
+  return p
+
+def pda2cfg():
+  p = make_pda()
+  p.to_cfg()
+  #p.my_cfg.print_converted_cfg()
+
+def pda_ops(event):
+  f = document["pda_gen"].getAttribute("from")
+  document["pda_gen"].style.display = "none"
+  if f == "pda2cfg":
+    pda2cfg()
+
 document["enter_dnfa_inp"].bind("click", dnfa_ops)
 document["enter_re"].bind("click", re_ops)
+document["pda_enter"].bind("click", pda_ops)
 </script>

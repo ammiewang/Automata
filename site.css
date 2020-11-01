@@ -26,3 +26,12 @@ table.center {
   margin: 4px 2px;
   cursor: pointer;
 }
+
+.smallbox {
+  width: 15px;
+  height: 15px;
+}
+
+.biglabel{
+  font-size: 20px;
+}

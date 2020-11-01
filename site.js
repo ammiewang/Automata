@@ -41,6 +41,12 @@ function switchPages(came_from, selection) {
       } else if (selection == 2){
         div3.setAttribute("from", "recomp");
       }
+    } else if (came_from == "pdaop"){
+      var div2 = document.getElementById("operation");
+      div2.style.display = "none";
+      var div3 = document.getElementById("pda_gen");
+      div3.style.display = "block";
+      div3.setAttribute("from", "pda2cfg")
     }
 }
 
@@ -65,7 +71,7 @@ function enterDNFA(){
   var headRow = document.createElement('tr');
 
   var th = document.createElement('th');
-  th.appendChild(document.createTextNode(''));
+  th.appendChild(document.createTextNode('State'));
   headRow.appendChild(th);
 
   for (i in alphabet) {
@@ -81,26 +87,14 @@ function enterDNFA(){
 
   for (var i = 0; i < parseInt(num_states); i++) {
     var tr = document.createElement('tr');
-    var lab = document.createElement('label');
-    if (accs.includes(i)){
-      if (start_states.includes(i)){
-        lab.innerHTML = "=> " + i + " F";
-      } else{
-        lab.innerHTML = i + " F";
-      }
-    } else{
-      if (start_states.includes(i)){
-        lab.innerHTML = "=> " + i;
-      } else {
-        lab.innerHTML = i;
-      }
-    }
-    tr.appendChild(lab);
-    for (var j = 0; j < alphabet.length; j++) {
+    for (var j = 0; j < alphabet.length + 1; j++) {
       var td = document.createElement('td');
       td.classList.add("input");
       var input = document.createElement('input');
       input.type = "text";
+      if (j==0){
+        input.setAttribute("class", "smallbox")
+      }
       td.appendChild(input);
       tr.appendChild(td);
     }
@@ -118,4 +112,62 @@ function enterDNFA(){
 function dnfaGenRegex(){
   var prevDiv = document.getElementById("dnfa_inp");
   prevDiv.style.display = "none";
+}
+
+function enterPDA(){
+  document.getElementById("pda_gen").style.display = "none";
+  var transitions = document.getElementById("pda_transitions");
+  transitions.style.display = "block";
+}
+
+function newPDArow(){
+  var tab_body = document.getElementById("pda_tab_body");
+  var tr = document.createElement('tr');
+  var td = document.createElement('td');
+  var lab = document.createElement('label');
+  lab.innerHTML = 'δ ( ';
+  lab.setAttribute("class", "biglabel");
+  var st1 = document.createElement('input');
+  st1.type = 'text';
+  st1.setAttribute("class", "smallbox");
+  var lab2 = document.createElement('label');
+  lab2.innerHTML = ' , ';
+  lab2.setAttribute("class", "biglabel");
+  var inpsym1 = document.createElement('input');
+  inpsym1.type = 'text';
+  inpsym1.setAttribute("class", "smallbox");
+  var lab3 = document.createElement('label');
+  lab3.innerHTML = ' , ';
+  lab3.setAttribute("class", "biglabel");
+  var stacksym1 = document.createElement('input');
+  stacksym1.type = 'text';
+  stacksym1.setAttribute("class", "smallbox");
+  var lab4 = document.createElement('label');
+  lab4.innerHTML = ' ) = ( ';
+  lab4.setAttribute("class", "biglabel");
+  var st2 = document.createElement('input');
+  st2.type = 'text';
+  st2.setAttribute("class", "smallbox");
+  var lab5 = document.createElement('label');
+  lab5.innerHTML = ' , ';
+  lab5.setAttribute("class", "biglabel");
+  var stacksym2 = document.createElement('input');
+  stacksym2.type = 'text';
+  stacksym2.setAttribute("class", "smallbox");
+  var lab6 = document.createElement('label');
+  lab6.innerHTML = ' )';
+
+  td.appendChild(lab);
+  td.appendChild(st1);
+  td.appendChild(lab2);
+  td.appendChild(inpsym1);
+  td.appendChild(lab3);
+  td.appendChild(stacksym1);
+  td.appendChild(lab4);
+  td.appendChild(st2);
+  td.appendChild(lab5);
+  td.appendChild(stacksym2);
+  td.appendChild(lab6);
+  tr.appendChild(td);
+  tab_body.append(tr);
 }
