@@ -503,7 +503,6 @@ class CFG:
         self.reduce()
 
     def convert_to_pda(self):
-        from automata.pda import PDA
         self.convert_to_gnf()
 
         s = state(0)
