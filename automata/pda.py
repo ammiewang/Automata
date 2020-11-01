@@ -1,5 +1,4 @@
-from collections import deque
-from random import choice
+import collections
 
 class PDA:
     def __init__(self, states, init_stack_sym=None):
@@ -13,7 +12,7 @@ class PDA:
             self.init_stack_symbol = '$'
         else:
             self.init_stack_symbol = init_stack_sym
-        self.stack = deque(self.init_stack_symbol)
+        self.stack = collections.deque(self.init_stack_symbol)
 
     def to_cfg(self):
         self.my_cfg = CFG({})
