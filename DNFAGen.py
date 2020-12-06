@@ -1,9 +1,11 @@
 from browser import document
 from browser import window
 
-from automata.state import state
-from automata.dfa import DFA
-from automata.nfa import NFA
+import requests
+
+requests.get('https://ammiewang.github.io/Automata/automata/state.py')
+requests.get('https://ammiewang.github.io/Automata/automata/dfa.py')
+requests.get('https://ammiewang.github.io/Automata/automata/nfa.py')
 
 def make_dfa_wrapper():
   sts = []
