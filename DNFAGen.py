@@ -3,14 +3,17 @@ from browser import window
 
 import urllib.request
 
-state_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/state.py")
+state_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/state.py")
 exec(state_link.read())
 
-dfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/dfa.py")
+dfa_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/dfa.py")
 exec(dfa_link.read())
 
-nfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/nfa.py")
+nfa_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/nfa.py")
 exec(nfa_link.read())
+
+re_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/regex.py")
+exec(re_link.read())
 
 def make_dfa_wrapper():
   sts = []
@@ -150,4 +153,27 @@ def dnfa_ops(event):
   elif f == "nfa2dfa":
     nfa2dfa()
 
+def re2dfa():
+  document["re_dfa_ans"].style.display = "block"
+  exp = document["re_txt"].value
+  r = Regex(exp)
+  r.dfa_maker()
+  render_dfa(r.my_dfa, "re2dfa_table")
+
+def recomp():
+  document["re_comp_ans"].style.display = "block"
+  exp = document["re_txt"].value
+  r = Regex(exp)
+  r.complement_maker()
+  document["re_ans"].value = r.complement
+
+def re_ops(event):
+  f = document["re_inp"].getAttribute("from")
+  document["re_inp"].style.display = "none"
+  if f == "re2dfa":
+    re2dfa()
+  elif f == "recomp":
+    recomp()
+
 document["enter_dnfa_inp"].bind("click", dnfa_ops)
+document["enter_re"].bind("click", re_ops)
