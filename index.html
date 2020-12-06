@@ -33,13 +33,12 @@
       <button id="recomp" class="button" onclick="switchPages('reop', 2)">RegEx Complement</button>
     </div>
     <div id="cfgop" style="display:none" class="wrapper">
-      <button id="cfg2pda" class="button"  onclick="switchPages('cfgop', 1)">CFG to PDA</button>
+      <button id="cfg2pda" class="button" onclick="switchPages('cfgop', 1)">CFG to PDA</button>
       <button id="simgram" class="button" onclick="switchPages('cfgop', 2)">Simplify Grammar</button>
-      <button id="elimnull" class="button" onclick="switchPages('cfgop', 3)">Eliminate Null Productions</button>
-      <button id="elimunit" class="button" onclick="switchPages('cfgop', 4)">Eliminate Unit Productions</button>
-      <button id="first" class="button" onclick="switchPages('cfgop', 5)">First Sets</button>
-      <button id="follow" class="button" onclick="switchPages('cfgop', 6)">Follow Sets</button>
-      <button id="predict" class="button" onclick="switchPages('cfgop', 7)">Predict Sets</button>
+      <button id="elim_null_unit" class="button" onclick="switchPages('cfgop', 3)">Eliminate Null/Unit Productions</button>
+      <button id="cnf" class="button" onclick="switchPages('cfgop', 4)">Chomsky Normal Form</button>
+      <button id="cnf" class="button" onclick="switchPages('cfgop', 5)">Greibach Normal Form</button>
+      <button id="first_follow_predict" class="button" onclick="switchPages('cfgop', 6)">First, Follow, and Predict Sets</button>
     </div>
     <div id="pdaop" style="display:none" class="wrapper">
       <button id="pda2cfg" class="button"  onclick="switchPages('pdaop', 1)">PDA to CFG</button>
@@ -124,171 +123,54 @@
         </tr>
       </tbody>
     </table>
-    <button onclick='newPDArow()'>Add Transition</button>
+    <button onclick='newPDArow()'>+</button>
     <button id="pda_enter">Enter</button>
+  </div>
+  <div id="cfg_ans" style="display:none">
+    <h1>CFG Answer</h1>
+    <table class="center" id="cfg_ans_table"></table>
+  </div>
+  <div id="cfg_inp" style="display:none" class="wrapper" from="none">
+    <h1>CFG Input</h1>
+    <table class="center" id="cfg_inp_table">
+      <tbody id="cfg_tab_body">
+        <tr>
+          <td class="input">
+            <input type="text" class="smallbox">
+            <label class="biglabel"> → </label>
+            <input type="text" class="box">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick='newCFGrow()'>+</button>
+    <button id="cfg_enter">Enter</button>
   </div>
   </body>
 </html>
+<script type="text/python" src="https://ammiewang.github.io/Automata/DNFAGen.py"></script>
 <script type="text/python">
 from browser import document
 from browser import window
 import urllib.request
 
-state_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/state.py")
-exec(state_link.read())
+#state_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/state.py")
+#exec(state_link.read())
 
-dfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/dfa.py")
-exec(dfa_link.read())
+#dfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/dfa.py")
+#exec(dfa_link.read())
 
-nfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/nfa.py")
-exec(nfa_link.read())
+#nfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/nfa.py")
+#exec(nfa_link.read())
 
 re_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/regex.py")
 exec(re_link.read())
 
-cfg_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/cfg.py")
-exec(cfg_link.read())
-
 pda_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/pda.py")
 exec(pda_link.read())
 
-def make_dfa_wrapper():
-  sts = []
-  rows = len(document["rows"].children)
-  cols = len(document["rows"].children[1].children)
-  alph = document["alphabet"].value.split()
-  id_to_st = {}
-
-  for i in range(rows):
-    st_name = document["original_table"].children[1].children[i].children[0].children[0].value
-    s = state(st_name)
-    sts.append(s)
-    id_to_st[st_name] = s
-
-  for i in range(rows):
-    s = sts[i]
-    s.outpaths = {}
-    for j in range(1, cols):
-      st2 = document["original_table"].children[1].children[i].children[j].children[0].value
-      if st2 != "":
-        s.outpaths[alph[j-1]] = id_to_st[st2]
-
-  d = DFA(sts)
-  d.start_state = id_to_st[document["ss"].value]
-  d.alphabet = alph
-  acc_list = document["accs"].value.split()
-  d.accept_states = [id_to_st[i] for i in acc_list]
-  return d
-
-def make_nfa_wrapper():
-  sts = []
-  rows = len(document["rows"].children)
-  cols = len(document["rows"].children[1].children)
-  alph = document["alphabet"].value.split()
-  id_to_st= {}
-
-  for i in range(rows):
-    st_name = document["original_table"].children[1].children[i].children[0].children[0].value
-    s = state(st_name)
-    sts.append(s)
-    id_to_st[st_name] = s
-
-  for i in range(rows):
-    s = sts[i]
-    s.outpaths = {}
-    for j in range(1, cols):
-      s.outpaths[alph[j-1]] = []
-      lst = document["original_table"].children[1].children[i].children[j].children[0].value.split(" ")
-      for st2 in lst:
-        if st2 != "":
-          s.outpaths[alph[j-1]].append(id_to_st[st2])
-
-  n = NFA(sts)
-  ss_list = document["ss"].value.split()
-  n.start_states = [id_to_st[i] for i in ss_list]
-  n.alphabet = alph
-  acc_list = document["accs"].value.split()
-  n.accept_states = [id_to_st[i] for i in acc_list]
-  return n
-
-def render_dfa(d, tab_name):
-  tab = document[tab_name]
-  thead = document.createElement('thead')
-  headRow = document.createElement('tr')
-
-  th = document.createElement('th')
-  th.appendChild(document.createTextNode(''))
-  headRow.appendChild(th)
-
-  for char in d.alphabet:
-    th = document.createElement('th')
-    th.appendChild(document.createTextNode(char))
-    headRow.appendChild(th)
-
-  thead.appendChild(headRow)
-
-  tbody = document.createElement('tbody')
-  tbody.setAttribute("id", "new_rows")
-
-  for st in d.states:
-    tr = document.createElement('tr')
-    lab = document.createElement('label')
-    lab.innerHTML = st.id
-    tr.appendChild(lab);
-    if (st in d.accept_states):
-      if (st.id == d.start_state.id):
-        lab.innerHTML = "=> " + str(d.start_state.id) + " F"
-      else:
-        lab.innerHTML = str(st.id) + " F"
-    else:
-      if (st.id == d.start_state.id):
-        lab.innerHTML = "=> " + str(d.start_state.id)
-      else:
-        lab.innerHTML = str(st.id)
-
-    for letter in d.alphabet:
-      td = document.createElement('td')
-      td.classList.add("input")
-      input = document.createElement('input')
-      input.type = "text"
-      if letter in st.outpaths:
-        input.value = st.outpaths[letter].id
-      td.appendChild(input);
-      tr.appendChild(td);
-
-
-    tbody.appendChild(tr);
-
-  tab.appendChild(thead);
-  tab.appendChild(tbody);
-
-def dfa2regex():
-  document["dfa2reg_ans_pg"].style.display = "block"
-  d = make_dfa_wrapper()
-  d.all_regex()
-  r = d.regex
-  document["reg_ans"].value = r
-
-def mindfa():
-  document["min_dfa"].style.display = "block"
-  d = make_dfa_wrapper()
-  d.minimize()
-  render_dfa(d, "min_table")
-
-def nfa2dfa():
-  document["nfa_dfa_ans"].style.display = "block"
-  n = make_nfa_wrapper()
-  n.nfa_to_dfa()
-  render_dfa(n.my_dfa, "nfa2dfa_table")
-
-def dnfa_ops(event):
-  f = document["dnfa_gen"].getAttribute("from")
-  if f == "dfa2re":
-    dfa2regex()
-  elif f == "mindfa":
-    mindfa()
-  elif f == "nfa2dfa":
-    nfa2dfa()
+cfg_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/cfg.py")
+exec(cfg_link.read())
 
 def re2dfa():
   document["re_dfa_ans"].style.display = "block"
@@ -348,10 +230,37 @@ def make_pda():
   p.accept_states = {id_to_st[i] for i in acc_list}
   return p
 
+def render_cfg(c):
+  tab = document["cfg_ans_table"]
+  tbody = document.createElement("tbody")
+  for nt, prods in c.rules.items():
+    tr = document.createElement('tr')
+    td = document.createElement('td')
+    lab = document.createElement("label")
+    if nt != c.start:
+      lab.innerHTML = nt + " → "
+    else:
+      lab.innerHTML = nt + "* → "
+    s = ''
+    for str in prods:
+        s2 = ' '.join(str)
+        s += s2 + '  |  '
+    s = s[:-5]
+    inp = document.createElement('input')
+    inp.type = 'text'
+    inp.value = s
+    td.append(lab)
+    td.append(inp)
+    tr.append(td)
+    tbody.append(tr)
+  tab.append(tbody)
+
 def pda2cfg():
   p = make_pda()
   p.to_cfg()
-  #p.my_cfg.print_converted_cfg()
+  document["pda_transitions"].style.display = "none"
+  document["cfg_ans"].style.display = "block"
+  render_cfg(p.my_cfg)
 
 def pda_ops(event):
   f = document["pda_gen"].getAttribute("from")
@@ -359,7 +268,7 @@ def pda_ops(event):
   if f == "pda2cfg":
     pda2cfg()
 
-document["enter_dnfa_inp"].bind("click", dnfa_ops)
+#document["enter_dnfa_inp"].bind("click", dnfa_ops)
 document["enter_re"].bind("click", re_ops)
 document["pda_enter"].bind("click", pda_ops)
 </script>
