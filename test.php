@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <body>
 
@@ -6,7 +7,7 @@
   print_r($data);
   echo $data["alphabet"];
   echo $data["stNames"];
-  echo $data["outpaths"]; 
+  echo $data["outpaths"];
 ?>
 
 </body>
