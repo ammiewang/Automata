@@ -1,11 +1,16 @@
 from browser import document
 from browser import window
 
-import requests
+import urllib.request
 
-requests.get('https://ammiewang.github.io/Automata/automata/state.py')
-requests.get('https://ammiewang.github.io/Automata/automata/dfa.py')
-requests.get('https://ammiewang.github.io/Automata/automata/nfa.py')
+state_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/state.py")
+exec(state_link.read())
+
+dfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/dfa.py")
+exec(dfa_link.read())
+
+nfa_link = urllib.request.urlopen("https://raw.githubusercontent.com/ammiewang/Automata/gh-pages/automata/nfa.py")
+exec(nfa_link.read())
 
 def make_dfa_wrapper():
   sts = []
