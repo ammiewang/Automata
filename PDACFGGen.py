@@ -2,6 +2,9 @@ from browser import document
 from browser import window
 import urllib.request
 
+state_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/state.py")
+exec(state_link.read())
+
 pda_link = urllib.request.urlopen("https://ammiewang.github.io/Automata/automata/pda.py")
 exec(pda_link.read())
 
@@ -35,11 +38,11 @@ def make_pda():
     else:
       st.outpaths[(inp1, stack1)].add((id_to_st[st2], stack2))
 
-  p = PDA(sts)
+  p = PDA(sts, document["pda_init_stack_sym"])
   p.start_state = id_to_st[document["pda_ss"].value]
   p.input_alphabet = set(inp_alph)
   p.stack_symbols = set(stack_alph)
-  p.stack_symbols.add(p.init_stack_symbol)
+  #p.stack_symbols.add(p.init_stack_symbol)
   acc_list = document["pda_accs"].value.split()
   p.accept_states = {id_to_st[i] for i in acc_list}
   return p

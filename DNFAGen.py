@@ -125,7 +125,7 @@ def render_dfa(d, tab_name):
   tab.appendChild(thead);
   tab.appendChild(tbody);
 
-  width = 238*(len(alphabet)) + 100;
+  width = 238*(len(d.alphabet)) + 100;
   document["minDFAbox"].style.width = str(width) + 'px'
 
 

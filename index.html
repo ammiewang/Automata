@@ -61,10 +61,10 @@
     </div>
   </div>
   <div id="dnfa_inp" style="display:none" class="wrapper">
-    <h1>DFA/NFA Input</h1>
+    <h1>DFA/NFA INPUT</h1>
     <button id="enter_dnfa_inp" onclick="dnfaGenRegex()" class="enterButton">Enter</button>
   </div>
-  <div id="dfa2reg_ans_pg" style="display:none" class="wrapper">
+  <div id="reg_ans_pg" style="display:none" class="wrapper">
     <h1>REGEX RESULT</h1>
     <div class="regexBox">
       <input type="text" id="reg_ans"><br><br>
@@ -78,7 +78,7 @@
     </div>
   </div>
   <div id="nfa_dfa_ans" style="display:none" class="wrapper">
-    <h1>DFA Result</h1>
+    <h1>DFA RESULT</h1>
     <table class="center" id="nfa2dfa_table">
     </table>
   </div>
@@ -90,54 +90,64 @@
     <button id="enter_re" class="enterButton">Enter</button>
   </div>
   <div id="re_dfa_ans" style="display:none" class="wrapper">
-    <h1>DFA Result</h1>
-    <table class="center" id="re2dfa_table">
-    </table>
+    <h1>DFA RESULT</h1>
+    <div id='minDFAbox' class='dfaBox'>
+      <table class="center" id="re2dfa_table">
+      </table>
+    </div>
   </div>
-  <div id="re_comp_ans" style="display:none" class="wrapper">
+  <!-- <div id="re_comp_ans" style="display:none" class="wrapper">
     <h1>RegEx Answer</h1>
     <input type="text" id="re_ans" name="re"><br><br>
-  </div>
-  <div id="pda_gen" style="display:none" class="wrapper" from="none">
-    <h1>PDA Chart Generator</h1>
-    <label for="pda_num_states">Number of States:</label>
-    <input type="text" id="pda_num_states" name="num_states"><br><br>
-    <label for="pda_ss">Start State:</label>
-    <input type="text" id="pda_ss" name="ss"><br><br>
-    <label for="pda_accs">Accept State(s):</label>
-    <input type="text" id="pda_accs" name="accs"><br><br>
-    <label for="pda_inp_alphabet">Input Alphabet:</label>
-    <input type="text" id="pda_inp_alphabet" name="alphabet"><br><br>
-    <label for="pda_stack_alphabet">Stack Alphabet:</label>
-    <input type="text" id="pda_stack_alphabet" name="alphabet"><br><br>
-    <button id="enter_pda_gen" onclick="enterPDA()">Enter</button>
+  </div> -->
+  <div id="pda_gen" style="display:none" from="none">
+    <h1>PDA CHART GENERATOR</h1>
+    <div class="inputBox">
+      <div><label for="pda_num_states">NUMBER OF STATES:</label></div>
+      <div><input type="text" id="pda_num_states" name="num_states"><br><br></div>
+      <div><label for="pda_ss">START STATE(S):</label></div>
+      <div><input type="text" id="pda_ss" name="ss"><br><br></div>
+      <div><label for="pda_accs">ACCEPT STATE(S):</label></div>
+      <div><input type="text" id="pda_accs" name="accs"><br><br></div>
+      <div><label for="pda_inp_alphabet">INPUT ALPHABET:</label></div>
+      <div><input type="text" id="pda_inp_alphabet" name="alphabet"><br><br></div>
+      <div><label for="pda_stack_alphabet">STACK ALPHABET:</label></div>
+      <div><input type="text" id="pda_stack_alphabet" name="alphabet"><br><br></div>
+      <div><label for="pda_init_stack_sym">INITIAL STACK SYMBOL:</label></div>
+      <div><input type="text" id="pda_init_stack_sym" name="alphabet"><br><br></div>
+    </div>
+    <div class="wrapper">
+      <button id="enter_pda_gen" onclick="enterPDA()" class="enterButton">Enter</button>
+    </div>
   </div>
   <div id="pda_transitions" style="display:none" class="wrapper" from="none">
-    <h1>PDA Transitions</h1>
-    <table class="center" id="pda_inp_table">
-      <tbody id="pda_tab_body">
-        <tr>
-          <td class="input">
-            <label class="biglabel">δ ( </label>
-            <input type="text" class="smallbox">
-            <label class="biglabel"> , </label>
-            <input type="text" class="smallbox">
-            <label class="biglabel"> , </label>
-            <input type="text" class="smallbox">
-            <label class="biglabel"> ) = ( </label>
-            <input type="text" class="smallbox">
-            <label class="biglabel"> , </label>
-            <input type="text" class="smallbox">
-            <label class="biglabel"> )</label>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <button onclick='newPDArow()'>+</button>
-    <button id="pda_enter">Enter</button>
+    <h1>PDA TRANSITIONS</h1>
+    <div class="pdaBox">
+      <table class="center" id="pda_inp_table">
+        <tbody id="pda_tab_body">
+          <tr>
+            <td class="input">
+              <label class="biglabel">δ ( </label>
+              <input type="text" class="smallbox">
+              <label class="biglabel"> , </label>
+              <input type="text" class="smallbox">
+              <label class="biglabel"> , </label>
+              <input type="text" class="smallbox">
+              <label class="biglabel"> ) = ( </label>
+              <input type="text" class="smallbox">
+              <label class="biglabel"> , </label>
+              <input type="text" class="smallbox">
+              <label class="biglabel"> )</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button onclick='newPDArow()' class="enterButton">+</button>
+    <button id="pda_enter" class="enterButton">Enter</button>
   </div>
   <div id="cfg_ans" style="display:none">
-    <h1>CFG Answer</h1>
+    <h1>CFG RESULT</h1>
     <table class="center" id="cfg_ans_table"></table>
   </div>
   <div id="cfg_inp" style="display:none" class="wrapper" from="none">

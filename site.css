@@ -78,7 +78,7 @@ table.center {
 
 .inputBox {
   background-color: #fcd2d2;
-  padding: 50px 10px;
+  padding: 50px 20px;
   display: grid;
   width: 500px;
   grid-template-columns: 200px 250px;
@@ -90,14 +90,14 @@ table.center {
 
 .dfaBox{
   background-color: #f3e3fa;
-  padding: 20px 10px;
+  padding: 100px 10px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .regexBox{
   background-color: #e3e3fa;
-  padding: 20px 20px;
+  padding: 100px 20px;
   margin-left: auto;
   margin-right: auto;
   width: 300px;
@@ -111,6 +111,13 @@ table.center {
   width: 400px;
 }
 
+.pdaBox {
+  background-color: #f3e3fa;
+  padding: 20px 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+}
 
 .enterButton {
   border: none;
