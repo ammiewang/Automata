@@ -126,7 +126,7 @@ def render_dfa(d, tab_name):
   tab.appendChild(tbody);
 
   width = 238*(len(alphabet)) + 100;
-  document["minDFAbox"].style.width = width
+  document["minDFAbox"].style.width = str(width) + 'px'
 
 
 def dfa2regex():

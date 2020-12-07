@@ -83,9 +83,11 @@
     </table>
   </div>
   <div id="re_inp" style="display:none" class="wrapper">
-    <h1>RegEx Input</h1>
-    <input type="text" id="re_txt" name="re"><br><br>
-    <button id="enter_re">Enter</button>
+    <h1>REGEX INPUT</h1>
+    <div class="regexBox">
+      <input type="text" id="re_txt" name="re"><br><br>
+    </div>
+    <button id="enter_re" class="enterButton">Enter</button>
   </div>
   <div id="re_dfa_ans" style="display:none" class="wrapper">
     <h1>DFA Result</h1>
@@ -139,20 +141,22 @@
     <table class="center" id="cfg_ans_table"></table>
   </div>
   <div id="cfg_inp" style="display:none" class="wrapper" from="none">
-    <h1>CFG Input</h1>
-    <table class="center" id="cfg_inp_table">
-      <tbody id="cfg_tab_body">
-        <tr>
-          <td class="input">
-            <input type="text" class="smallbox">
-            <label class="biglabel"> → </label>
-            <input type="text" class="box">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <button onclick='newCFGrow()'>+</button>
-    <button id="cfg_enter">Enter</button>
+    <h1>CFG INPUT</h1>
+    <div class='cfgBox'>
+      <table class="center" id="cfg_inp_table">
+        <tbody id="cfg_tab_body">
+          <tr>
+            <td class="input">
+              <input type="text" class="smallbox">
+              <label class="biglabel"> → </label>
+              <input type="text" class="box">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button onclick='newCFGrow()' class="enterButton">+</button>
+    <button id="cfg_enter" class="enterButton">Enter</button>
   </div>
   </body>
 </html>
