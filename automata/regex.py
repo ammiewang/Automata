@@ -155,7 +155,7 @@ class Regex:
                 self.count_dict[key] += 1
                 lst.append(self.parts_dict[key][idx])
             if round == 0:
-                return plus(lst, finalize=True)
+                return self.plus(lst, finalize=True)
             return self.plus(lst)
 
         else:
