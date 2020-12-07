@@ -12,8 +12,10 @@ class PDA:
         self.stack_symbols = set()#[]
         if init_stack_sym is None:
             self.init_stack_symbol = '$'
+            self.stack_symbols.add('$')
         else:
             self.init_stack_symbol = init_stack_sym
+            self.stack_symbols.add(init_stack_sym)
         self.stack = deque(self.init_stack_symbol)
 
     def to_cfg(self):
