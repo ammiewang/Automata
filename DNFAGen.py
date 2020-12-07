@@ -130,7 +130,7 @@ def render_dfa(d, tab_name):
 
 
 def dfa2regex():
-  document["dfa2reg_ans_pg"].style.display = "block"
+  document["reg_ans_pg"].style.display = "block"
   d = make_dfa_wrapper()
   d.all_regex()
   r = d.regex
@@ -165,11 +165,11 @@ def re2dfa():
   render_dfa(r.my_dfa, "re2dfa_table")
 
 def recomp():
-  document["re_comp_ans"].style.display = "block"
+  document["reg_ans_pg"].style.display = "block"
   exp = document["re_txt"].value
   r = Regex(exp)
   r.complement_maker()
-  document["re_ans"].value = r.complement
+  document["reg_ans"].value = r.complement
 
 def re_ops(event):
   f = document["re_inp"].getAttribute("from")
