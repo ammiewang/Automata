@@ -3,7 +3,21 @@ body {
   color: black;
 }
 
-h1 {text-align: center;}
+h1 {
+  text-align: center;
+}
+
+input[type=text] {
+  border: none;
+  padding: 5px 5px;
+  box-shadow: 5px 5px;
+}
+
+label{
+  font-weight: bold;
+  /*font-family: Arial;*/
+  font-style: italic;
+}
 
 table.center {
   margin-left: auto;
@@ -12,12 +26,18 @@ table.center {
 
 .wrapper {
     text-align: center;
+    justify-content: center;
+}
+
+.container {
+    padding: 10px;
+    margin: 0 auto;
+    width:1250px;
 }
 
 .button {
   border: none;
   color: black;
-  padding: 75px 150px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -25,11 +45,70 @@ table.center {
   font-size: 32px;
   margin: 4px 2px;
   cursor: pointer;
+  white-space: normal;
+}
+
+.normalButton{
+  padding: 75px 150px;
+}
+
+.flexButton {
+  padding: 100px;
+  width: 30%
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
 }
 
 .smallbox {
   width: 15px;
   height: 15px;
+}
+
+.inputBox {
+  background-color: #fcd2d2;
+  padding: 50px 10px;
+  display: grid;
+  width: 500px;
+  grid-template-columns: 200px 250px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.dfaBox{
+  background-color: #f3e3fa;
+  padding: 20px 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.regexBox{
+  background-color: #e3e3fa;
+  padding: 20px 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 300px;
+}
+
+
+.enterButton {
+  border: none;
+  padding: 5px 10px;
+  margin: 10px 2px;
+  cursor: pointer;
 }
 
 .biglabel{

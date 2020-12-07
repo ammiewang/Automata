@@ -100,12 +100,12 @@ def render_dfa(d, tab_name):
     tr.appendChild(lab);
     if (st in d.accept_states):
       if (st.id == d.start_state.id):
-        lab.innerHTML = "=> " + str(d.start_state.id) + " F"
+        lab.innerHTML = "→ " + str(d.start_state.id) + " F"
       else:
         lab.innerHTML = str(st.id) + " F"
     else:
       if (st.id == d.start_state.id):
-        lab.innerHTML = "=> " + str(d.start_state.id)
+        lab.innerHTML = "→ " + str(d.start_state.id)
       else:
         lab.innerHTML = str(st.id)
 
@@ -124,6 +124,10 @@ def render_dfa(d, tab_name):
 
   tab.appendChild(thead);
   tab.appendChild(tbody);
+
+  width = 238*(len(alphabet)) + 100;
+  document["minDFAbox"].style.width = width
+
 
 def dfa2regex():
   document["dfa2reg_ans_pg"].style.display = "block"

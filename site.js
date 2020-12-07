@@ -11,7 +11,9 @@ function switchPages(came_from, selection) {
       } else if (selection == 3){
         document.getElementById("reop").style.display = "block";
       } else if (selection == 4){
-        document.getElementById("cfgop").style.display = "block";
+        document.getElementById("cfgop").style.display = "flex";
+        document.getElementById("cfgop").style.flexWrap = "wrap";
+        document.getElementById("cfgop").style.flexDirection = "row";
       } else if (selection == 5){
         document.getElementById("pdaop").style.display = "block";
       }
@@ -70,10 +72,13 @@ function enterDNFA(){
   var newDiv = document.getElementById("dnfa_inp");
   newDiv.style.display = "block";
 
+  var divBox = document.createElement("div");
+  divBox.setAttribute('class', 'dfaBox');
+
   var table = document.createElement('table');
   table.setAttribute('class', 'center');
   table.setAttribute('id', 'original_table');
-  table.classList.add('table');
+  //table.classList.add('table');
 
   var thead = document.createElement('thead');
   var headRow = document.createElement('tr');
@@ -112,55 +117,14 @@ function enterDNFA(){
 
   table.appendChild(thead);
   table.appendChild(tbody);
+
+  var width = 238*(alphabet.length) + 100;
+
+  divBox.appendChild(table);
+  divBox.style.width = width.toString() + 'px';
+  newDiv.appendChild(divBox);
   //newDiv.appendChild(table);
-  $('#enter_dnfa_inp').before(table);
-
-  $("button").click(function(){
-    var alphabet = document.getElementById("alphabet").value.split(" ");
-    var rows = document.getElementById("rows").childElementCount;
-    var cols = document.getElementById("rows").children[1].childElementCount
-    var stNames = []
-    for (var i = 0; i < rows; i++){
-      stNames.push(document.getElementById("original_table").children[1].children[i].children[0].children[0].value)
-    }
-    var outpaths = {}
-    for (var i = 0; i < rows; i++){
-      s = stNames[i]
-      soutpaths = {}
-      for (var j = 1; j < cols; j++){
-        st2 = document.getElementById("original_table").children[1].children[i].children[j].children[0].value
-        if (st2 != "")
-          soutpaths[alphabet[j-1]] = st2
-      }
-      outpaths[s] = soutpaths;
-    }
-
-    // var test = JSON.stringify({
-    //   'alphabet': alphabet,
-    //   'stNames': stNames,
-    //   'outpaths': outpaths
-    // })
-    //
-    // var xhr = new XMLHttpRequest();
-    // var url = "url";
-    // xhr.open("POST", "https://ammiewang.github.io/Automata/test.json", true);
-    // xhr.setRequestHeader("Content-Type", "application/json");
-    // xhr.onreadystatechange = function () {
-    //     if (xhr.readyState === 4 && xhr.status === 200) {
-    //         var json = JSON.parse(xhr.responseText);
-    //         console.log(json.email + ", " + json.password);
-    //     }
-    // };
-    // //var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
-    // xhr.send(test);
-
-    $.post('https://ammiewang.github.io/Automata/DNFAInfo', {
-      'alphabet': alphabet,
-      'stNames': stNames,
-      'outpaths': outpaths
-    });
-  });
-
+  $('#enter_dnfa_inp').before(divBox);
 
 }
 
