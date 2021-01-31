@@ -60,7 +60,6 @@ class PDA:
                     #get all combos for one [pXq]
                     if ' ' in sym2:
                         sym2 = sym2.split()
-                    #print(sym2)
                     lst = self.enumerate_nts(s2, sym2, s3)
                     if inp != 'ε':
                         lst = [[inp] + seq for seq in lst]
@@ -68,7 +67,6 @@ class PDA:
 
         self.my_cfg.rules = new_rules
         self.my_cfg.start = 'S'
-        #self.my_cfg.print_converted_cfg()
         self.my_cfg.reduce()
 
     def final_state_to_empty_stack(self):
@@ -151,7 +149,7 @@ class PDA:
 
     def get_input_alphabet(self):
         input_alphabet = set()
-        if len(self.transitions) == 0:
+        if len(self.transitions) == 0: #maybe delete
             self.flatten_transitions()
         for s1, inp, sym1, s2, sym2 in self.transitions:
             if inp not in input_alphabet and inp != 'ε':
@@ -159,7 +157,6 @@ class PDA:
         self.input_alphabet = input_alphabet
 
     def print_pda(self):
-        #if len(self.transitions) == 0:
         self.flatten_transitions()
         print('Start State:', self.start_state.id)
         print('Accept State(s):', [s.id for s in self.accept_states])

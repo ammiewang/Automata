@@ -569,32 +569,17 @@ class CFG:
     def convert_to_gnf(self):
         #self.find_terms_nonterms()
         self.convert_to_cnf()
-        print('chomsky')
-        self.print_converted_cfg()
-        print('\n')
         self.determine_ordering()
-        print(self.ordering)
         self.check_ij_form()
-        print('ij form')
-        self.print_converted_cfg()
-        print('\n')
         self.fix_gnform()
         self.reduce()
 
     def convert_to_pda(self):
         from automata.pda import PDA
-        # print("Non Greibach")
-        # self.print_converted_cfg()
-        # print("finished")
-        # self.convert_to_gnf()
-        # print("Greibach")
-        # self.print_converted_cfg()
-        # print("finished")
 
         s = state(0)
         s1 = state(1)
         p = PDA(set([s]), self.start)
-        # p = PDA(set([s, s1]), self.start)
         self.find_terms_nonterms()
         p.alphabet = self.terminals.difference(set(['ε']))
         p.stack_symbols = self.nonterminals.union(p.alphabet)
@@ -607,11 +592,10 @@ class CFG:
             prods = self.rules[nt]
             for str in prods:
                 if ('ε', nt) in s.outpaths:
-                    s.outpaths[('ε', nt)].append((s, str),)#.add((s, str))
+                    s.outpaths[('ε', nt)].append((s, str),)
                 else:
-                    s.outpaths[('ε', nt)] = [(s, str)]#set([(s, str)])
-        #s.outpaths[('ε', self.start)] = [(s1, 'ε')]
-        #p.accept_states = set([s1])
+                    s.outpaths[('ε', nt)] = [(s, str)]
+
         self.my_pda = p
         self.my_pda.start_state = s
 

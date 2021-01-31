@@ -4,8 +4,11 @@ from flask import request
 from DNFAGen import *
 from PDACFGen import *
 
-app = Flask(__name__)
-#lastEntry = None
+app = Flask(__name__, static_folder='../build', static_url_path='/')
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 @app.route('/api/dnfa/input', methods = ['GET', 'POST'])
 def dfa_inp():
@@ -24,11 +27,9 @@ def dfa_inp():
 @app.route('/api/regex/input', methods = ['GET', 'POST'])
 def regex_inp():
     if request.method == 'POST':
-        #print('hereee')
         data = json.loads(request.data)
         if data['conversionType'] == 're2dfa':
             dfa_from_re = re2dfa(data)
-            #print(dfa_from_re)
             return {'result': dfa_from_re}
         elif data['conversionType'] == 'recomp':
             complemented = recomp(data)
@@ -40,9 +41,6 @@ def pda_inp():
         data = json.loads(request.data)
         if data['conversionType'] == 'pda2cfg':
             cfg_from_pda = pda2cfg(data)
-            #cfg_from_pda.print_converted_cfg()
-            #print(cfg_from_pda.rules)
-            print(cfg_from_pda)
             return {'result': cfg_from_pda}
 
 @app.route('/api/cfg/input', methods = ['GET', 'POST'])
@@ -60,7 +58,6 @@ def cfg_inp():
             return {'result': new_grammar}
         elif data['conversionType'] == 'ffpSets':
             all_sets = ffpSets(data)
-            #print(all_sets)
             return {'result': all_sets}
         elif data['conversionType'] == 'leftRec':
             new_grammar = leftRec(data)
