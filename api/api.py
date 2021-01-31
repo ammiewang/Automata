@@ -77,3 +77,6 @@ def cfg_inp():
         elif data['conversionType'] == 'parseTable':
             new_pt = parseTable(data)
             return {'result': new_pt}
+
+if __name__ == "__main__":
+    app.run()
