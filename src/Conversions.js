@@ -1,0 +1,18 @@
+export default class Conversions {
+  static dfaToRegex = 'dfa2re'
+  static minDfa = 'mindfa'
+  static nfaToDfa = 'nfa2dfa'
+  static regexToDfa = 're2dfa'
+  static regexComplement = 'recomp'
+  static cfgToPda = 'cfg2pda'
+  static simplifyGrammar = 'simgram'
+  static elimNull = 'elimNull'
+  static elimUnit = 'elimUnit'
+  static chomsky = 'cnf'
+  static greibach = 'gnf'
+  static ffpSets = 'ffpSets'
+  static parseTable = 'parseTable'
+  static leftRecursion = 'leftRec'
+  static commonSubexpression = 'comSub'
+  static pdaToCfg = 'pda2cfg'
+}
